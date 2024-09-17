@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class UsuarioDto {
 
     private int itemAi; // Correlativo único
-    private long idUsuario; // Correlativo desde 10000000x
+    private int idUsuario; // Correlativo desde 10000000x
     private String codUsuario; 
     private String usuario; 
     private String password; 
@@ -30,7 +30,7 @@ public class UsuarioDto {
     private LocalTime horaUltimoAcceso; 
 
     // Constructor
-    public UsuarioDto(int itemAi, long idUsuario, String codUsuario, String usuario, String password,
+    public UsuarioDto(int itemAi, int idUsuario, String codUsuario, String usuario, String password,
             String nombres, String apellidos, String email, String permisos, String estado,
             boolean enlinea, int numIngresos, LocalDate fecCreacion, LocalDate fecModificacion,
             LocalDate fecEliminacion, LocalDate fecUltimoAcceso, String creadoPor, String modificadoPor,
@@ -66,24 +66,13 @@ public class UsuarioDto {
         return itemAi;
     }
 
-    public void setItemAi(int itemAi) {
-        this.itemAi = itemAi;
-    }
-
-    public long getIdUsuario() {
+    public int getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(long idUsuario) {
-        this.idUsuario = idUsuario;
-    }
 
     public String getCodUsuario() {
         return codUsuario;
-    }
-
-    public void setCodUsuario(String codUsuario) {
-        this.codUsuario = codUsuario;
     }
 
     public String getUsuario() {
