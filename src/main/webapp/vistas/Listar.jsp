@@ -79,11 +79,11 @@
                             <td><%= usu.getHoraEliminacion() %></td>
                             <td><%= usu.getHoraUltimoAcceso() %></td>
                             <td>
-                                <a>Editar</a>
-                                <a>Eliminar</a>
+                                <a href="#">Editar</a>
+                                <a href="#">Eliminar</a>
                             </td>
                         </tr>
-                        <% } %>
+                        <% }%>
                     </tbody>
                 </table>
             </div>
