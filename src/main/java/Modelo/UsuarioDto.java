@@ -33,6 +33,7 @@ public class UsuarioDto {
     public UsuarioDto() {
     }
 
+    //Pensando en poder listar todo el contenido de la tabla
     public UsuarioDto(int idUsuario, String codUsuario, String usuario, String password, String nombres, String apellidos, String email, String permisos, int estado, boolean enlinea, int numIngresos, LocalDate fecCreacion, LocalDate fecModificacion, LocalDate fecEliminacion, LocalDate fecUltimoAcceso, String creadoPor, String modificadoPor, String eliminadaPor, LocalTime horaCreacion, LocalTime horaModificacion, LocalTime horaEliminacion, LocalTime horaUltimoAcceso) {
         this.idUsuario = idUsuario;
         this.codUsuario = codUsuario;
