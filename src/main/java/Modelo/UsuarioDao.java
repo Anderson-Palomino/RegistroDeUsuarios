@@ -8,6 +8,6 @@ package Modelo;
  *
  * @author ander
  */
-public class usuariosdao {
+public class UsuarioDao {
     
 }
