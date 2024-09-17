@@ -1,76 +1,76 @@
 package Modelo;
 
+import conexion.Conexion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioDao implements IUsuario {
 
-    private Connection conexion;
-
-    public UsuarioDao(Connection conexion) {
-        this.conexion = conexion;
-    }
-
-    @Override
-    public void agregarUsuario(UsuarioDto usuario) {
-//        String sql = "INSERT INTO usuarios (IdUsuario, CodUsuario, Usuario, Password, Nombres, Apellidos, Email, Permisos, Estado, Enlinea, Num_Ingresos,"
-//                + "Fec_Creacion, Fec_Modificacion, Fec_Eliminacion, Fec_UltimoAcceso, Creado_Por, Modificado_Por, Eliminado_Por, Hora_Creacion, Hora_Modificacion, Hora_Eliminacion, Hora_UltimoAcceso)"
-//                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    }
+    Conexion cn = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+    UsuarioDto u = new UsuarioDto();
 
     @Override
-    public UsuarioDto listarUsuarioPorId(int idUsuario) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public List<UsuarioDto> listarTodosLosUsuarios() {
-        List<UsuarioDto> usuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios";
-        try (Statement st = conexion.createStatement()) {
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                UsuarioDto usuario = new UsuarioDto(
-                        rs.getInt("IteamA"),
-                        rs.getInt("IdUsuario"),
-                        rs.getString("CodUsuario"),
-                        rs.getString("Usuario"),
-                        rs.getString("Password"),
-                        rs.getString("Nombres"),
-                        rs.getString("Apellidos"),
-                        rs.getString("Email"),
-                        rs.getString("Permisos"),
-                        rs.getString("Estado"),
-                        rs.getBoolean("EnLinea"),
-                        rs.getInt("Num_Ingresos"),
-                        rs.getDate("Fec_Creacion").toLocalDate(),
-                        rs.getDate("Fec_Modificacion").toLocalDate(),
-                        rs.getDate("Fec_Eliminacion").toLocalDate(),
-                        rs.getDate("Fec_UltimoAcceso").toLocalDate(),
-                        rs.getString("Creado_Por"),
-                        rs.getString("Modificado_Por"),
-                        rs.getString("Eliminado_Por"),
-                        rs.getTime("Hora_Creacion").toLocalTime(),
-                        rs.getTime("Hora_Modificacion").toLocalTime(),
-                        rs.getTime("Hora_Eliminacion").toLocalTime(),
-                        rs.getTime("Hora_UltimoAcceso").toLocalTime()
-                );
-                usuarios.add(usuario);
+    public List listar() {
+        ArrayList<UsuarioDto>list=new ArrayList<>();
+        String sql ="select * from usuarios";
+        try {
+            con = cn.getConexion();
+            ps=con.prepareStatement(sql);
+            rs=ps.executeQuery();
+            while(rs.next()){
+                UsuarioDto usu=new UsuarioDto();
+                usu.setItemAi(rs.getInt("ItemA"));
+                usu.setIdUsuario(rs.getInt("IdUsuario"));
+                usu.setCodUsuario(rs.getString("CodUsuario"));
+                usu.setUsuario(rs.getString("Usuario"));
+                usu.setPassword(rs.getString("Password"));
+                usu.setNombres(rs.getString("Nombres"));
+                usu.setApellidos(rs.getString("Apellidos"));
+                usu.setEmail(rs.getString("Email"));
+                usu.setPermisos(rs.getString("Permisos"));
+                usu.setEstado(rs.getInt("Estado"));
+                usu.setEnlinea(rs.getBoolean("EnLinea"));
+                usu.setNumIngresos(rs.getInt("Num_Ingresos"));
+                usu.setFecCreacion(rs.getDate("Fec_Creacion").toLocalDate());
+                usu.setFecModificacion(rs.getDate("Fec_Modificacion").toLocalDate());
+                usu.setFecEliminacion(rs.getDate("Fec_Eliminacion").toLocalDate());
+                usu.setFecUltimoAcceso(rs.getDate("Fec_UltimoAcceso").toLocalDate());
+                usu.setCreadoPor(rs.getString("Creado_Por"));
+                usu.setModificadoPor(rs.getString("Modificado_Por"));
+                usu.setEliminadaPor(rs.getString("Eliminado_Por"));
+                usu.setHoraCreacion(rs.getTime("Hora_Creacion").toLocalTime());
+                usu.setHoraModificacion(rs.getTime("Hora_Modificacion").toLocalTime());
+                usu.setHoraEliminacion(rs.getTime("Hora_Eliminacion").toLocalTime());
+                usu.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso").toLocalTime());
+                list.add(usu);
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
-        return usuarios;
+        return list;
     }
 
     @Override
-    public void actualizarUsuario() {
+    public UsuarioDto list(int idUsuario) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void eliminarUsuario() {
+    public boolean add(UsuarioDto usu) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    @Override
+    public boolean edit(UsuarioDto usu) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean eliminar(int idUsuario) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

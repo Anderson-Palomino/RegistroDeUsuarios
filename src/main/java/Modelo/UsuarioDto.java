@@ -14,7 +14,7 @@ public class UsuarioDto {
     private String apellidos;
     private String email;
     private String permisos;
-    private String estado;
+    private int estado;
     private boolean enlinea;
     private int numIngresos;
     private LocalDate fecCreacion;
@@ -33,71 +33,7 @@ public class UsuarioDto {
     public UsuarioDto() {
     }
 
-    //Pensando en la eliminacion de objeto de tipo usuario
-    public UsuarioDto(String codUsuario) {
-        this.codUsuario = codUsuario;
-    }
-
-    //Pensando en la insercion
-    public UsuarioDto(String usuario, String password,
-            String nombres, String apellidos, String email, String permisos, String estado,
-            boolean enlinea, int numIngresos, LocalDate fecCreacion, LocalDate fecModificacion,
-            LocalDate fecEliminacion, LocalDate fecUltimoAcceso, String creadoPor, String modificadoPor,
-            String eliminadaPor, LocalTime horaCreacion, LocalTime horaModificacion,
-            LocalTime horaEliminacion, LocalTime horaUltimoAcceso) {
-        this.usuario = usuario;
-        this.password = password;
-        this.nombres = nombres;
-        this.apellidos = apellidos;
-        this.email = email;
-        this.permisos = permisos;
-        this.estado = estado;
-        this.enlinea = enlinea;
-        this.numIngresos = numIngresos;
-        this.fecCreacion = fecCreacion;
-        this.fecModificacion = fecModificacion;
-        this.fecEliminacion = fecEliminacion;
-        this.fecUltimoAcceso = fecUltimoAcceso;
-        this.creadoPor = creadoPor;
-        this.modificadoPor = modificadoPor;
-        this.eliminadaPor = eliminadaPor;
-        this.horaCreacion = horaCreacion;
-        this.horaModificacion = horaModificacion;
-        this.horaEliminacion = horaEliminacion;
-        this.horaUltimoAcceso = horaUltimoAcceso;
-    }
-    
-    //Constructor para la seleccion de objeto de tipo usuario
-    public UsuarioDto(int idUsuario,int codUsuario, String usuario,
-            String nombres, String apellidos, String email, String permisos, String estado,
-            boolean enlinea, int numIngresos, LocalDate fecCreacion, LocalDate fecModificacion,
-            LocalDate fecEliminacion, LocalDate fecUltimoAcceso, String creadoPor, String modificadoPor,
-            String eliminadaPor, LocalTime horaCreacion, LocalTime horaModificacion,
-            LocalTime horaEliminacion, LocalTime horaUltimoAcceso) {
-        this.usuario = usuario;
-        this.nombres = nombres;
-        this.apellidos = apellidos;
-        this.email = email;
-        this.permisos = permisos;
-        this.estado = estado;
-        this.enlinea = enlinea;
-        this.numIngresos = numIngresos;
-        this.fecCreacion = fecCreacion;
-        this.fecModificacion = fecModificacion;
-        this.fecEliminacion = fecEliminacion;
-        this.fecUltimoAcceso = fecUltimoAcceso;
-        this.creadoPor = creadoPor;
-        this.modificadoPor = modificadoPor;
-        this.eliminadaPor = eliminadaPor;
-        this.horaCreacion = horaCreacion;
-        this.horaModificacion = horaModificacion;
-        this.horaEliminacion = horaEliminacion;
-        this.horaUltimoAcceso = horaUltimoAcceso;
-    }
-    //Constructor que reune todo
-
-    public UsuarioDto(int itemAi, int idUsuario, String codUsuario, String usuario, String password, String nombres, String apellidos, String email, String permisos, String estado, boolean enlinea, int numIngresos, LocalDate fecCreacion, LocalDate fecModificacion, LocalDate fecEliminacion, LocalDate fecUltimoAcceso, String creadoPor, String modificadoPor, String eliminadaPor, LocalTime horaCreacion, LocalTime horaModificacion, LocalTime horaEliminacion, LocalTime horaUltimoAcceso) {
-        this.itemAi = itemAi;
+    public UsuarioDto(int idUsuario, String codUsuario, String usuario, String password, String nombres, String apellidos, String email, String permisos, int estado, boolean enlinea, int numIngresos, LocalDate fecCreacion, LocalDate fecModificacion, LocalDate fecEliminacion, LocalDate fecUltimoAcceso, String creadoPor, String modificadoPor, String eliminadaPor, LocalTime horaCreacion, LocalTime horaModificacion, LocalTime horaEliminacion, LocalTime horaUltimoAcceso) {
         this.idUsuario = idUsuario;
         this.codUsuario = codUsuario;
         this.usuario = usuario;
@@ -121,19 +57,29 @@ public class UsuarioDto {
         this.horaEliminacion = horaEliminacion;
         this.horaUltimoAcceso = horaUltimoAcceso;
     }
-    
-    
-    // Getters y Setters
+
     public int getItemAi() {
         return itemAi;
+    }
+
+    public void setItemAi(int itemAi) {
+        this.itemAi = itemAi;
     }
 
     public int getIdUsuario() {
         return idUsuario;
     }
 
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
     public String getCodUsuario() {
         return codUsuario;
+    }
+
+    public void setCodUsuario(String codUsuario) {
+        this.codUsuario = codUsuario;
     }
 
     public String getUsuario() {
@@ -184,11 +130,11 @@ public class UsuarioDto {
         this.permisos = permisos;
     }
 
-    public String getEstado() {
+    public int getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(int estado) {
         this.estado = estado;
     }
 
@@ -295,4 +241,6 @@ public class UsuarioDto {
     public void setHoraUltimoAcceso(LocalTime horaUltimoAcceso) {
         this.horaUltimoAcceso = horaUltimoAcceso;
     }
+    
+    
 }
