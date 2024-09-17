@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author ander
  */
 @WebServlet(name = "login", urlPatterns = {"/login"})
-public class login extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
