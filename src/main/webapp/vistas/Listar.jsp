@@ -1,3 +1,7 @@
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.List"%>
+<%@page import="Modelo.UsuarioDto"%>
+<%@page import="Modelo.UsuarioDao"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -9,7 +13,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
-        <div class="container my-4" >
+        <div class="container my-4">
             <h2 class="mb-4">Tabla de Usuarios</h2>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
@@ -38,36 +42,48 @@
                             <th>Hora Modificación</th>
                             <th>Hora Eliminación</th>
                             <th>Hora Último Acceso</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="usuario" items="${listaUsuarios}">
-                            <tr>
-                                <td>${usuario.itemAi}</td>
-                                <td>${usuario.idUsuario}</td>
-                                <td>${usuario.codUsuario}</td>
-                                <td>${usuario.usuario}</td>
-                                <td>${usuario.password}</td>
-                                <td>${usuario.nombres}</td>
-                                <td>${usuario.apellidos}</td>
-                                <td>${usuario.email}</td>
-                                <td>${usuario.permisos}</td>
-                                <td>${usuario.estado}</td>
-                                <td>${usuario.enLinea}</td>
-                                <td>${usuario.numIngresos}</td>
-                                <td>${usuario.fecCreacion}</td>
-                                <td>${usuario.fecModificacion}</td>
-                                <td>${usuario.fecEliminacion}</td>
-                                <td>${usuario.fecUltimoAcceso}</td>
-                                <td>${usuario.creadoPor}</td>
-                                <td>${usuario.modificadoPor}</td>
-                                <td>${usuario.eliminadaPor}</td>
-                                <td>${usuario.horaCreacion}</td>
-                                <td>${usuario.horaModificacion}</td>
-                                <td>${usuario.horaEliminacion}</td>
-                                <td>${usuario.horaUltimoAcceso}</td>
-                            </tr>
-                        </c:forEach>
+                        <% 
+                            UsuarioDao dao = new UsuarioDao();
+                            List<UsuarioDto> list = dao.listar();
+                            Iterator<UsuarioDto> iter = list.iterator();
+                            UsuarioDto usu = null;
+                            while (iter.hasNext()) {
+                                usu = iter.next(); 
+                        %>
+                        <tr>
+                            <td><%= usu.getItemAi() %></td>
+                            <td><%= usu.getIdUsuario() %></td>
+                            <td><%= usu.getCodUsuario() %></td>
+                            <td><%= usu.getUsuario() %></td>
+                            <td><%= usu.getPassword() %></td>
+                            <td><%= usu.getNombres() %></td>
+                            <td><%= usu.getApellidos() %></td>
+                            <td><%= usu.getEmail() %></td>
+                            <td><%= usu.getPermisos() %></td>
+                            <td><%= usu.getEstado() %></td>
+                            <td><%= usu.isEnlinea() %></td>
+                            <td><%= usu.getNumIngresos() %></td>
+                            <td><%= usu.getFecCreacion() %></td>
+                            <td><%= usu.getFecModificacion() %></td>
+                            <td><%= usu.getFecEliminacion() %></td>
+                            <td><%= usu.getFecUltimoAcceso() %></td>
+                            <td><%= usu.getCreadoPor() %></td>
+                            <td><%= usu.getModificadoPor() %></td>
+                            <td><%= usu.getEliminadaPor() %></td>
+                            <td><%= usu.getHoraCreacion() %></td>
+                            <td><%= usu.getHoraModificacion() %></td>
+                            <td><%= usu.getHoraEliminacion() %></td>
+                            <td><%= usu.getHoraUltimoAcceso() %></td>
+                            <td>
+                                <a>Editar</a>
+                                <a>Eliminar</a>
+                            </td>
+                        </tr>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
