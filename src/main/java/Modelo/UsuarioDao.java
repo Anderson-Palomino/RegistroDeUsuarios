@@ -15,16 +15,16 @@ public class UsuarioDao implements IUsuario {
 
     @Override
     public List listar() {
-        ArrayList<UsuarioDto>list=new ArrayList<>();
-        String sql ="select * from usuarios";
+        ArrayList<UsuarioDto> list = new ArrayList<>();
+        String sql = "select * from usuarios";
         try {
             con = cn.getConexion();
-            ps=con.prepareStatement(sql);
-            rs=ps.executeQuery();
-            while(rs.next()){
-                UsuarioDto usu=new UsuarioDto();
-                usu.setItemAi(rs.getInt("ItemA"));
-                usu.setIdUsuario(rs.getInt("IdUsuario"));
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                UsuarioDto usu = new UsuarioDto();
+                usu.setItemAi(rs.getInt("ItemAI"));
+                usu.setIdUsuario(rs.getInt("idUsuario"));
                 usu.setCodUsuario(rs.getString("CodUsuario"));
                 usu.setUsuario(rs.getString("Usuario"));
                 usu.setPassword(rs.getString("Password"));
@@ -34,18 +34,18 @@ public class UsuarioDao implements IUsuario {
                 usu.setPermisos(rs.getString("Permisos"));
                 usu.setEstado(rs.getInt("Estado"));
                 usu.setEnlinea(rs.getBoolean("EnLinea"));
-                usu.setNumIngresos(rs.getInt("Num_Ingresos"));
+                usu.setNumIngresos(rs.getObject("Num_Ingresos") != null ? rs.getInt("Num_Ingresos") : 0);
                 usu.setFecCreacion(rs.getDate("Fec_Creacion").toLocalDate());
-                usu.setFecModificacion(rs.getDate("Fec_Modificacion").toLocalDate());
-                usu.setFecEliminacion(rs.getDate("Fec_Eliminacion").toLocalDate());
-                usu.setFecUltimoAcceso(rs.getDate("Fec_UltimoAcceso").toLocalDate());
-                usu.setCreadoPor(rs.getString("Creado_Por"));
-                usu.setModificadoPor(rs.getString("Modificado_Por"));
-                usu.setEliminadaPor(rs.getString("Eliminado_Por"));
+                usu.setFecModificacion(rs.getDate("Fec_Modificacion") != null ? rs.getDate("Fec_Modificacion").toLocalDate() : null);
+                usu.setFecEliminacion(rs.getDate("Fec_Eliminacion") != null ? rs.getDate("Fec_Eliminacion").toLocalDate() : null);
+                usu.setFecUltimoAcceso(rs.getDate("Fec_UltimoAcceso") != null ? rs.getDate("Fec_UltimoAcceso").toLocalDate() : null);
+                usu.setCreadoPor(rs.getString("Creado_Por") != null ? rs.getString("Creado_Por") : "");
+                usu.setModificadoPor(rs.getString("Modificado_Por") != null ? rs.getString("Modificado_Por") : "");
+                usu.setEliminadaPor(rs.getString("Eliminado_Por") != null ? rs.getString("Eliminado_Por") : "");
                 usu.setHoraCreacion(rs.getTime("Hora_Creacion").toLocalTime());
-                usu.setHoraModificacion(rs.getTime("Hora_Modificacion").toLocalTime());
-                usu.setHoraEliminacion(rs.getTime("Hora_Eliminacion").toLocalTime());
-                usu.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso").toLocalTime());
+                usu.setHoraModificacion(rs.getTime("Hora_Modificacion") != null ? rs.getTime("Hora_Modificacion").toLocalTime() : null);
+                usu.setHoraEliminacion(rs.getTime("Hora_Eliminacion") != null ? rs.getTime("Hora_Eliminacion").toLocalTime() : null);
+                usu.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso") != null ? rs.getTime("Hora_UltimoAcceso").toLocalTime() : null);
                 list.add(usu);
             }
         } catch (Exception e) {
