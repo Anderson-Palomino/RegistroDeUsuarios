@@ -14,7 +14,8 @@
     </head>
     <body>
         <div class="container my-4">
-            <h2 class="mb-4">Tabla de Usuarios</h2>
+            <h2 class="mb-4">Usuarios</h2>
+            <a href="PrincipalServlet?accion=add">Agregar nuevo usuario</a>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <thead class="table-dark">
