@@ -1,3 +1,6 @@
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Statement"%>
+<%@page import="conexion.Conexion"%>
 <%@page import="java.util.Iterator"%> 
 <%@page import="java.util.List"%>
 <%@page import="Modelo.UsuarioDto"%>
@@ -14,11 +17,19 @@
         <link href="${pageContext.request.contextPath}/css/listar.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <div class="container my-4">
+        <<div class="container my-4">
             <h2 class="mb-4 text-center">Usuarios</h2>
             <div class="mb-3 text-end">
-                <a href="PrincipalServlet?accion=add" class="btn btn-primary">Agregar nuevo usuario</a>
+                <a href="PrincipalServlet?accion=add" class="btn btn-primary mb-2">Agregar nuevo usuario</a>
+                <form action="PrincipalServlet" method="get" class="d-inline-block ms-3">
+                    <div class="input-group">
+                        <input type="hidden" name="accion" value="listar">
+                        <input type="text" class="form-control" name="txtBuscar" placeholder="Buscar usuario">
+                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
             </div>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <thead>
@@ -38,53 +49,59 @@
                             <th>Fecha Creación</th>
                             <th>Fecha Modificación</th>
                             <th>Fecha Eliminación</th>
-                            <th>Fecha Último Acceso</th>
+                            <th>Fecha Ultimo Acceso</th>
                             <th>Creado Por</th>
                             <th>Modificado Por</th>
                             <th>Eliminado Por</th>
                             <th>Hora Creación</th>
                             <th>Hora Modificación</th>
-                            <th>Hora Eliminación</th>
-                            <th>Hora Último Acceso</th>
+                            <th>Hora Ultimo Acceso</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% 
+                        <%
+                            String nombuscar = request.getParameter("txtBuscar");
                             UsuarioDao dao = new UsuarioDao();
-                            List<UsuarioDto> list = dao.listar();
+                            List<UsuarioDto> list;
+
+                            if (nombuscar != null && !nombuscar.isEmpty()) {
+                                list = dao.buscarPorNombre(nombuscar);  // Método para buscar por nombre
+                            } else {
+                                list = dao.listar();  // Si no hay búsqueda, lista todo
+                            }
+
                             Iterator<UsuarioDto> iter = list.iterator();
                             UsuarioDto usu = null;
                             while (iter.hasNext()) {
-                                usu = iter.next(); 
+                                usu = iter.next();
                         %>
                         <tr>
-                            <td><%= usu.getItemAi() %></td>
-                            <td><%= usu.getIdUsuario() %></td>
-                            <td><%= usu.getCodUsuario() %></td>
-                            <td><%= usu.getUsuario() %></td>
-                            <td><%= usu.getPassword() %></td>
-                            <td><%= usu.getNombres() %></td>
-                            <td><%= usu.getApellidos() %></td>
-                            <td><%= usu.getEmail() %></td>
-                            <td><%= usu.getPermisos() %></td>
-                            <td><%= usu.getEstado() %></td>
-                            <td><%= usu.isEnlinea() %></td>
-                            <td><%= usu.getNumIngresos() %></td>
-                            <td><%= usu.getFecCreacion() %></td>
-                            <td><%= usu.getFecModificacion() %></td>
-                            <td><%= usu.getFecEliminacion() %></td>
-                            <td><%= usu.getFecUltimoAcceso() %></td>
-                            <td><%= usu.getCreadoPor() %></td>
-                            <td><%= usu.getModificadoPor() %></td>
-                            <td><%= usu.getEliminadaPor() %></td>
-                            <td><%= usu.getHoraCreacion() %></td>
-                            <td><%= usu.getHoraModificacion() %></td>
-                            <td><%= usu.getHoraEliminacion() %></td>
-                            <td><%= usu.getHoraUltimoAcceso() %></td>
+                            <td><%= usu.getItemAi()%></td>
+                            <td><%= usu.getIdUsuario()%></td>
+                            <td><%= usu.getCodUsuario()%></td>
+                            <td><%= usu.getUsuario()%></td>
+                            <td><%= usu.getPassword()%></td>
+                            <td><%= usu.getNombres()%></td>
+                            <td><%= usu.getApellidos()%></td>
+                            <td><%= usu.getEmail()%></td>
+                            <td><%= usu.getPermisos()%></td>
+                            <td><%= usu.getEstado()%></td>
+                            <td><%= usu.isEnlinea()%></td>
+                            <td><%= usu.getNumIngresos()%></td>
+                            <td><%= usu.getFecCreacion()%></td>
+                            <td><%= usu.getFecModificacion()%></td>
+                            <td><%= usu.getFecEliminacion()%></td>
+                            <td><%= usu.getFecUltimoAcceso()%></td>
+                            <td><%= usu.getCreadoPor()%></td>
+                            <td><%= usu.getModificadoPor()%></td>
+                            <td><%= usu.getEliminadaPor()%></td>
+                            <td><%= usu.getHoraCreacion()%></td>
+                            <td><%= usu.getHoraEliminacion()%></td>
+                            <td><%= usu.getHoraUltimoAcceso()%></td>
                             <td>
-                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario() %>" class="btn btn-warning btn-sm">Editar</a>
-                                <a href="PrincipalServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario() %>" class="btn btn-danger btn-sm">Eliminar</a>
+                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-warning btn-sm">Editar</a>
+                                <a href="PrincipalServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-danger btn-sm">Eliminar</a>
                             </td>
                         </tr>
                         <% }%>
@@ -92,6 +109,7 @@
                 </table>
             </div>
         </div>
+
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     </body>
