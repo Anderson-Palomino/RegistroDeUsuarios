@@ -80,7 +80,7 @@
                             <td><%= usu.getHoraEliminacion() %></td>
                             <td><%= usu.getHoraUltimoAcceso() %></td>
                             <td>
-                                <a href="#">Editar</a>
+                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario() %>">Editar</a>
                                 <a href="#">Eliminar</a>
                             </td>
                         </tr>

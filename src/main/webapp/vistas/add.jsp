@@ -12,37 +12,43 @@
 
     <body>
         <div class="container mt-5">
-            <h2>Agregar usuarios</h2>
-            <form action="PrincipalServlet">
-                <div class="mb-3">
-                    <label for="usuario" class="form-label">Usuario</label>
-                    <input type="text" class="form-control" id="usuario" name="usuario">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h2 class="text-center mb-4">Agregar usuarios</h2>
+                    <form action="PrincipalServlet">
+                        <div class="mb-3">
+                            <label for="usuario" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="usuario" name="usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombres" class="form-label">Nombres</label>
+                            <input type="text" class="form-control" id="nombres" name="nombres" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellidos" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="permisos" class="form-label">Permisos</label>
+                            <select class="form-select" id="permisos" name="permisos" required>
+                                <option value="usuarioNormal">Usuario Normal</option>
+                                <option value="administrador">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <input type="submit" class="btn btn-primary" name="accion" value="Agregar">
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control" id="password" name="password">
-                </div>
-                <div class="mb-3">
-                    <label for="nombres" class="form-label">Nombres</label>
-                    <input type="text" class="form-control" id="nombres" name="nombres">
-                </div>
-                <div class="mb-3">
-                    <label for="apellidos" class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" id="apellidos" name="apellidos">
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email">
-                </div>
-                <div class="mb-3">
-                    <label for="permisos" class="form-label">Permisos</label>
-                    <select class="form-select" id="permisos" name="permisos">
-                        <option value="usuarioNormal">UsuarioNormal</option>
-                        <option value="administrador">Administrador</option>
-                    </select>
-                </div>
-                <input type="submit" class="btn btn-primary" name="accion" value="Agregar">
-            </form>
+            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

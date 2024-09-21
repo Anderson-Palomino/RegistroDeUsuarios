@@ -70,6 +70,26 @@ public class PrincipalServlet extends HttpServlet {
             u.setPermisos(permisos);
             dao.add(u);
             acceso = listar;
+        }else if (action.equalsIgnoreCase("editar")){
+            request.setAttribute("idusu", request.getParameter("idUsuario"));
+            acceso=edit;
+        }else if(action.equalsIgnoreCase("Actualizar")){
+            int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+            String usuario = request.getParameter("usuario");
+            String password = request.getParameter("password");
+            String nombres = request.getParameter("nombres");
+            String apellidos = request.getParameter("apellidos");
+            String email = request.getParameter("email");
+            String permisos = request.getParameter("permisos");
+            u.setIdUsuario(idUsuario);
+            u.setUsuario(usuario);
+            u.setPassword(password);
+            u.setNombres(nombres);
+            u.setApellidos(apellidos);
+            u.setEmail(email);
+            u.setPermisos(permisos);
+            dao.edit(u);
+            acceso=listar;
         }
         RequestDispatcher vista = request.getRequestDispatcher(acceso);
         vista.forward(request, response);
