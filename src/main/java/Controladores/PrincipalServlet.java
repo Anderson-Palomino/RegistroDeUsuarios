@@ -9,6 +9,7 @@ import Modelo.UsuarioDto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,10 +52,22 @@ public class PrincipalServlet extends HttpServlet {
             throws ServletException, IOException {
         String acceso = "";
         String action = request.getParameter("accion");
+
         if (action.equalsIgnoreCase("listar")) {
             acceso = listar;
         } else if (action.equalsIgnoreCase("add")) {
             acceso = add;
+        } else if (action.equalsIgnoreCase("buscar")) {
+            // Recoge el parámetro de búsqueda ingresado por el usuario
+            String nombreBuscar = request.getParameter("txtBuscar");
+
+            // Llama al método del DAO que busca los usuarios por nombre
+            List<UsuarioDto> listaUsuarios = dao.buscarPorNombre(nombreBuscar);
+
+            // Establece los resultados de la búsqueda como atributo de la petición
+            request.setAttribute("usuarios", listaUsuarios);
+
+            acceso = listar; // Redirige a la página de listado de usuarios con los resultados
         } else if (action.equalsIgnoreCase("Agregar")) {
             String usuario = request.getParameter("usuario");
             String password = request.getParameter("password");
@@ -70,10 +83,10 @@ public class PrincipalServlet extends HttpServlet {
             u.setPermisos(permisos);
             dao.add(u);
             acceso = listar;
-        }else if (action.equalsIgnoreCase("editar")){
+        } else if (action.equalsIgnoreCase("editar")) {
             request.setAttribute("idusu", request.getParameter("idUsuario"));
-            acceso=edit;
-        }else if(action.equalsIgnoreCase("Actualizar")){
+            acceso = edit;
+        } else if (action.equalsIgnoreCase("Actualizar")) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
             String usuario = request.getParameter("usuario");
             String password = request.getParameter("password");
@@ -89,13 +102,14 @@ public class PrincipalServlet extends HttpServlet {
             u.setEmail(email);
             u.setPermisos(permisos);
             dao.edit(u);
-            acceso=listar;
-        }else if(action.equalsIgnoreCase("eliminar")){
+            acceso = listar;
+        } else if (action.equalsIgnoreCase("eliminar")) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
             u.setIdUsuario(idUsuario);
             dao.eliminar(u);
-            acceso=listar;
+            acceso = listar;
         }
+
         RequestDispatcher vista = request.getRequestDispatcher(acceso);
         vista.forward(request, response);
     }

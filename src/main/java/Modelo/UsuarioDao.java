@@ -1,6 +1,7 @@
 package Modelo;
 
 import conexion.Conexion;
+import static conexion.Conexion.getConexion;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -164,18 +165,18 @@ public class UsuarioDao implements IUsuario {
     }
 
     public boolean eliminar(UsuarioDto usu) {
-        String sql="UPDATE usuarios SET Estado=? WHERE idUsuario = ?";
+        String sql = "UPDATE usuarios SET Estado=? WHERE idUsuario = ?";
         try {
-            con=cn.getConexion();
-            ps=con.prepareStatement(sql);
-            
+            con = cn.getConexion();
+            ps = con.prepareStatement(sql);
+
             ps.setInt(1, usu.getEstado());
-            ps.setInt(2, usu.getIdUsuario());  
-            
+            ps.setInt(2, usu.getIdUsuario());
+
             int rowsUpdated = ps.executeUpdate();
             return rowsUpdated > 0;
         } catch (Exception e) {
-        }finally {
+        } finally {
             try {
                 if (ps != null) {
                     ps.close();  // Cierra el PreparedStatement
@@ -190,5 +191,47 @@ public class UsuarioDao implements IUsuario {
 
         return false;
     }
+
+    public List<UsuarioDto> buscarPorNombre(String nombre) {
+    List<UsuarioDto> lista = new ArrayList<>();
+    try {
+        Connection con = getConexion();
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM usuarios WHERE Nombres LIKE ?");
+        ps.setString(1, "%" + nombre + "%");
+        ResultSet rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            UsuarioDto u = new UsuarioDto();
+            u.setItemAi(rs.getInt("ItemAI"));
+                u.setIdUsuario(rs.getInt("idUsuario"));
+                u.setCodUsuario(rs.getString("CodUsuario"));
+                u.setUsuario(rs.getString("Usuario"));
+                u.setPassword(rs.getString("Password"));
+                u.setNombres(rs.getString("Nombres"));
+                u.setApellidos(rs.getString("Apellidos"));
+                u.setEmail(rs.getString("Email"));
+                u.setPermisos(rs.getString("Permisos"));
+                u.setEstado(rs.getInt("Estado"));
+                u.setEnlinea(rs.getBoolean("EnLinea"));
+                u.setNumIngresos(rs.getObject("Num_Ingresos") != null ? rs.getInt("Num_Ingresos") : 0);
+                u.setFecCreacion(rs.getDate("Fec_Creacion").toLocalDate());
+                u.setFecModificacion(rs.getDate("Fec_Modificacion") != null ? rs.getDate("Fec_Modificacion").toLocalDate() : null);
+                u.setFecEliminacion(rs.getDate("Fec_Eliminacion") != null ? rs.getDate("Fec_Eliminacion").toLocalDate() : null);
+                u.setFecUltimoAcceso(rs.getDate("Fec_UltimoAcceso") != null ? rs.getDate("Fec_UltimoAcceso").toLocalDate() : null);
+                u.setCreadoPor(rs.getString("Creado_Por") != null ? rs.getString("Creado_Por") : "");
+                u.setModificadoPor(rs.getString("Modificado_Por") != null ? rs.getString("Modificado_Por") : "");
+                u.setEliminadaPor(rs.getString("Eliminado_Por") != null ? rs.getString("Eliminado_Por") : "");
+                u.setHoraCreacion(rs.getTime("Hora_Creacion").toLocalTime());
+                u.setHoraModificacion(rs.getTime("Hora_Modificacion") != null ? rs.getTime("Hora_Modificacion").toLocalTime() : null);
+                u.setHoraEliminacion(rs.getTime("Hora_Eliminacion") != null ? rs.getTime("Hora_Eliminacion").toLocalTime() : null);
+                u.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso") != null ? rs.getTime("Hora_UltimoAcceso").toLocalTime() : null);
+            lista.add(u);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return lista;
+}
+
 
 }
