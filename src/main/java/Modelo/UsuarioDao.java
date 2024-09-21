@@ -1,6 +1,7 @@
 package Modelo;
 
 import conexion.Conexion;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,30 @@ public class UsuarioDao implements IUsuario {
 
     @Override
     public boolean add(UsuarioDto usu) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "INSERT INTO usuarios (Usuario, Password, Nombres, Apellidos, Email, Permisos) VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+            con = cn.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, usu.getUsuario());
+            ps.setString(2, usu.getPassword());
+            ps.setString(3, usu.getNombres());
+            ps.setString(4, usu.getApellidos());
+            ps.setString(5, usu.getEmail());
+            ps.setString(6, usu.getPermisos());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Devuelve true si se insertó al menos un registro
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprimir error para depuración
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace(); // Manejo de excepciones al cerrar
+            }
+        }
+        return false; // Si no se insertó nada, devuelve false
     }
 
     @Override
