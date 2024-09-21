@@ -90,6 +90,11 @@ public class PrincipalServlet extends HttpServlet {
             u.setPermisos(permisos);
             dao.edit(u);
             acceso=listar;
+        }else if(action.equalsIgnoreCase("eliminar")){
+            int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+            u.setIdUsuario(idUsuario);
+            dao.eliminar(u);
+            acceso=listar;
         }
         RequestDispatcher vista = request.getRequestDispatcher(acceso);
         vista.forward(request, response);

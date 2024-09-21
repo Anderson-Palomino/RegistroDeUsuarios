@@ -5,5 +5,5 @@ public interface IUsuario {
     public UsuarioDto list(int idUsuario);
     public boolean add(UsuarioDto usu);
     public boolean edit(UsuarioDto usu);
-    public boolean eliminar(int idUsuario);
+    public boolean eliminar(UsuarioDto usu);
 }

@@ -163,9 +163,32 @@ public class UsuarioDao implements IUsuario {
         return false;  // Retorna false si la operación falló
     }
 
-    @Override
-    public boolean eliminar(int idUsuario) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean eliminar(UsuarioDto usu) {
+        String sql="UPDATE usuarios SET Estado=? WHERE idUsuario = ?";
+        try {
+            con=cn.getConexion();
+            ps=con.prepareStatement(sql);
+            
+            ps.setInt(1, usu.getEstado());
+            ps.setInt(2, usu.getIdUsuario());  
+            
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (Exception e) {
+        }finally {
+            try {
+                if (ps != null) {
+                    ps.close();  // Cierra el PreparedStatement
+                }
+                if (con != null) {
+                    con.close();  // Cierra la conexión
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
     }
 
 }
