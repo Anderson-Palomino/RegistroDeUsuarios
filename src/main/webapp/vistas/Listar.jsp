@@ -1,4 +1,4 @@
-<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Iterator"%> 
 <%@page import="java.util.List"%>
 <%@page import="Modelo.UsuarioDto"%>
 <%@page import="Modelo.UsuarioDao"%>
@@ -11,14 +11,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tabla de Usuarios</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/listar.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <div class="container my-4">
-            <h2 class="mb-4">Usuarios</h2>
-            <a href="PrincipalServlet?accion=add">Agregar nuevo usuario</a>
+            <h2 class="mb-4 text-center">Usuarios</h2>
+            <div class="mb-3 text-end">
+                <a href="PrincipalServlet?accion=add" class="btn btn-primary">Agregar nuevo usuario</a>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
-                    <thead class="table-dark">
+                    <thead>
                         <tr>
                             <th>Item AI</th>
                             <th>ID Usuario</th>
@@ -80,8 +83,8 @@
                             <td><%= usu.getHoraEliminacion() %></td>
                             <td><%= usu.getHoraUltimoAcceso() %></td>
                             <td>
-                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario() %>">Editar</a>
-                                <a href="#">Eliminar</a>
+                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario() %>" class="btn btn-warning btn-sm">Editar</a>
+                                <a href="PrincipalServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario() %>" class="btn btn-danger btn-sm">Eliminar</a>
                             </td>
                         </tr>
                         <% }%>
