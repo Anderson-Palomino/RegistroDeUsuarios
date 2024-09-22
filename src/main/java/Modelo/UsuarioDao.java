@@ -13,6 +13,7 @@ public class UsuarioDao implements IUsuario {
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
+    int r;
     UsuarioDto u = new UsuarioDto();
 
     @Override
@@ -193,16 +194,16 @@ public class UsuarioDao implements IUsuario {
     }
 
     public List<UsuarioDto> buscarPorNombre(String nombre) {
-    List<UsuarioDto> lista = new ArrayList<>();
-    try {
-        Connection con = getConexion();
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM usuarios WHERE Nombres LIKE ?");
-        ps.setString(1, "%" + nombre + "%");
-        ResultSet rs = ps.executeQuery();
-        
-        while (rs.next()) {
-            UsuarioDto u = new UsuarioDto();
-            u.setItemAi(rs.getInt("ItemAI"));
+        List<UsuarioDto> lista = new ArrayList<>();
+        try {
+            Connection con = getConexion();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM usuarios WHERE Nombres LIKE ?");
+            ps.setString(1, "%" + nombre + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                UsuarioDto u = new UsuarioDto();
+                u.setItemAi(rs.getInt("ItemAI"));
                 u.setIdUsuario(rs.getInt("idUsuario"));
                 u.setCodUsuario(rs.getString("CodUsuario"));
                 u.setUsuario(rs.getString("Usuario"));
@@ -225,13 +226,50 @@ public class UsuarioDao implements IUsuario {
                 u.setHoraModificacion(rs.getTime("Hora_Modificacion") != null ? rs.getTime("Hora_Modificacion").toLocalTime() : null);
                 u.setHoraEliminacion(rs.getTime("Hora_Eliminacion") != null ? rs.getTime("Hora_Eliminacion").toLocalTime() : null);
                 u.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso") != null ? rs.getTime("Hora_UltimoAcceso").toLocalTime() : null);
-            lista.add(u);
+                lista.add(u);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return lista;
     }
-    return lista;
-}
 
+    @Override
+    public int validar(UsuarioDto usu) {
+        String sql = "SELECT * FROM usuarios WHERE Usuario = ? AND Password = ?";
+        int resultado = 0;
+        try {
+            con = cn.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, usu.getUsuario());
+            ps.setString(2, usu.getPassword());
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                resultado = 1;
+                usu.setUsuario(rs.getString("Usuario"));
+                usu.setPassword(rs.getString("Password"));
+                usu.setEmail(rs.getString("Email"));
+                usu.setNombres(rs.getString("Nombres"));// Aquí agregas la asignación del email
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return resultado;
+    }
 
 }

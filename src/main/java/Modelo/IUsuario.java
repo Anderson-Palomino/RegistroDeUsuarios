@@ -1,6 +1,7 @@
 package Modelo;
 import java.util.List;
 public interface IUsuario {
+    public int validar (UsuarioDto usu);
     public List listar();
     public UsuarioDto list(int idUsuario);
     public boolean add(UsuarioDto usu);
