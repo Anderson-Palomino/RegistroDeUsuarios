@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
                 request.getSession().setAttribute("usuario", usuario);
                 request.getSession().setAttribute("email", email);
                 request.getSession().setAttribute("nombres", nombres);
-                request.getRequestDispatcher("/vistas/home.jsp").forward(request, response);
+                request.getRequestDispatcher("/vistas/Listar.jsp").forward(request, response);
             } else {
                 request.getRequestDispatcher("/vistas/login.jsp").forward(request, response);
             }

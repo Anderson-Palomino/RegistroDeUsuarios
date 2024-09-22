@@ -27,7 +27,6 @@
                         </div>
                         <input type="submit" name="accion" class="btn btn-primary w-100" value="Ingresar">
                     </form>
-
                 </div>
             </div>
         </div>
