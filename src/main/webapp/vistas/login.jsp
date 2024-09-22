@@ -16,17 +16,18 @@
                         <img src="${pageContext.request.contextPath}/img/user1.png" class="img-fluid" width="80" alt="User Icon"/>
                         <h5 class="mt-2"><strong>Bienvenidos al sistema</strong></h5>
                     </div>
-                    <form action="PrincipalServlet">
+                    <form action="${pageContext.request.contextPath}/LoginServlet" method="POST">
                         <div class="mb-3">
                             <label for="usuario" class="form-label">Usuario:</label>
-                            <input type="text" name="txtNombre" class="form-control" id="usuario" placeholder="Ingrese su usuario">
+                            <input type="text" name="txtUsuario" class="form-control" id="usuario" placeholder="Ingrese su usuario">
                         </div>
                         <div class="mb-3">
                             <label for="contraseña" class="form-label">Contraseña:</label>
-                            <input type="password" name="txtContraseña" class="form-control" id="contraseña" placeholder="Ingrese su contraseña">
+                            <input type="password" name="txtPassword" class="form-control" id="password" placeholder="Ingrese su contraseña">
                         </div>
-                        <button type="submit" name="accion" class="btn btn-primary w-100">Ingresar</button>
+                        <input type="submit" name="accion" class="btn btn-primary w-100" value="Ingresar">
                     </form>
+
                 </div>
             </div>
         </div>
