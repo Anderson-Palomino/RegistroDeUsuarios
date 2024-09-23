@@ -99,7 +99,7 @@ public class PrincipalServlet extends HttpServlet {
             String nombres = request.getParameter("nombres");
             String apellidos = request.getParameter("apellidos");
             String email = request.getParameter("email");
-            String permisos = request.getParameter("permisos");
+            int estado = Integer.parseInt(request.getParameter("estado"));
 
             u.setIdUsuario(idUsuario);
             u.setUsuario(usuario);
@@ -107,10 +107,21 @@ public class PrincipalServlet extends HttpServlet {
             u.setNombres(nombres);
             u.setApellidos(apellidos);
             u.setEmail(email);
-            u.setPermisos(permisos);
+            u.setEstado(estado);
 
             // Obtener el codUsuario del editor desde la sesión
             String codUsuarioEditor = (String) request.getSession().getAttribute("codUsuario");
+
+            // Si el usuario en sesión es ADM1, permitir que modifique los permisos
+            if (codUsuarioEditor.equals("ADM1")) {
+                String permisos = request.getParameter("permisos");
+                u.setPermisos(permisos);
+            } else {
+                // Mantener los permisos actuales si no es ADM1
+                UsuarioDto usuarioExistente = dao.list(idUsuario); // Obtener los permisos actuales
+                u.setPermisos(usuarioExistente.getPermisos());
+            }
+
             dao.edit(u, codUsuarioEditor); // Pasar el codUsuarioEditor
             acceso = listar;
         } else if (action.equalsIgnoreCase("eliminar")) {

@@ -2,17 +2,9 @@
 <%@page import="Modelo.UsuarioDao"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:choose>
-    <c:when test="${sessionScope.permisos eq 'Administrador'}">
-        <%@ include file="navbarAdministrador.jsp" %>
-    </c:when>
-    <c:otherwise>
-        <%@ include file="navbarUsuarioNormal.jsp" %>
-    </c:otherwise>
-</c:choose>
+
 <!doctype html>
 <html lang="en">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,6 +15,15 @@
     </head>
 
     <body>
+        <c:choose>
+            <c:when test="${sessionScope.permisos eq 'Administrador'}">
+                <%@ include file="navbarAdministrador.jsp" %>
+            </c:when>
+            <c:otherwise>
+                <%@ include file="navbarUsuarioNormal.jsp" %>
+            </c:otherwise>
+        </c:choose>
+
         <div class="container mt-5">
             <div class="row justify-content-center">
                 <%
@@ -35,7 +36,7 @@
                     <form action="PrincipalServlet">
                         <div class="mb-3">
                             <label for="usuario" class="form-label">Usuario</label>
-                            <input type="text" class="form-control" id="usuario" name="usuario" value="<%= u.getUsuario()%>">
+                            <input type="text" class="form-control" id="usuario" name="usuario" value="<%= u.getUsuario()%>" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Contraseña</label>
@@ -55,12 +56,27 @@
                         </div>
                         <div class="mb-3">
                             <label for="permisos" class="form-label">Permisos</label>
-                            <select class="form-select" id="permisos" name="permisos" value="<%= u.getPermisos()%>">
-                                <option value="usuarioNormal">Usuario Normal</option>
-                                <option value="administrador">Administrador</option>
-                            </select>
+                            <c:choose>
+                                <c:when test="${sessionScope.codUsuario == 'ADM1'}">
+                                    <select class="form-select" id="permisos" name="permisos" required>
+                                        <option value="UsuarioNormal" <c:if test="${u.getPermisos() == 'UsuarioNormal'}">selected</c:if>>Usuario Normal</option>
+                                        <option value="Administrador" <c:if test="${u.getPermisos() == 'Administrador'}">selected</c:if>>Administrador</option>
+                                        </select>
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="hidden" id="permisos" name="permisos" value="<%= u.getPermisos()%>">
+                                </c:otherwise>
+                            </c:choose>
                         </div>
-                        <input type="hidden" name="idUsuario" value="<%= u.getIdUsuario()%>">
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select" id="estado" name="estado" required>
+                                <option value="1" <c:if test="${u.getEstado() == 1}">selected</c:if>>Activo</option>
+                                <option value="2" <c:if test="${u.getEstado() == 2}">selected</c:if>>Suspendido</option>
+                                <option value="0" <c:if test="${u.getEstado() == 0}">selected</c:if>>Eliminado</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="idUsuario" value="<%= u.getIdUsuario()%>">
                         <div class="d-grid gap-2">
                             <input type="submit" class="btn btn-primary" name="accion" value="Actualizar">
                             <a href="PrincipalServlet?accion=listar" class="btn btn-secondary">Regresar</a>
@@ -74,5 +90,4 @@
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
         </script>
     </body>
-
 </html>
