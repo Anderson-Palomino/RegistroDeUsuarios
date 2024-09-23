@@ -151,9 +151,14 @@ public class UsuarioDao implements IUsuario {
         return false; // Si no se insertó nada, devuelve false
     }
 
+    
     @Override
     public boolean edit(UsuarioDto usu, String codUsuarioEditor) {
-        String sql = "UPDATE usuarios SET Usuario = ?, Password = ?, Nombres = ?, Apellidos = ?, Email = ?, Permisos = ?, Modificado_Por = ? WHERE idUsuario = ?";
+        String sql = "UPDATE usuarios SET Usuario = ?, Password = ?, Nombres = ?, Apellidos = ?, Email = ?, "
+                + (codUsuarioEditor.equals("ADM1") ? "Permisos = ?, " : "")
+                + // Solo ADM1 puede modificar permisos
+                "Estado = ?, Modificado_Por = ? WHERE idUsuario = ?";
+
         try {
             con = cn.getConexion();  // Obteniendo la conexión
             ps = con.prepareStatement(sql);
@@ -164,14 +169,20 @@ public class UsuarioDao implements IUsuario {
             ps.setString(3, usu.getNombres());   // Asigna el valor de "Nombres"
             ps.setString(4, usu.getApellidos()); // Asigna el valor de "Apellidos"
             ps.setString(5, usu.getEmail());     // Asigna el valor de "Email"
-            ps.setString(6, usu.getPermisos());  // Asigna el valor de "Permisos"
-            ps.setString(7, codUsuarioEditor);   // Agrega el codUsuario del editor
-            ps.setInt(8, usu.getIdUsuario());    // Asigna el valor de "idUsuario" para la condición WHERE
+
+            int parameterIndex = 6;
+            if (codUsuarioEditor.equals("ADM1")) {
+                ps.setString(parameterIndex, usu.getPermisos());  // Solo ADM1 puede asignar permisos
+                parameterIndex++;
+            }
+
+            ps.setInt(parameterIndex, usu.getEstado());           // Asigna el valor de "Estado"
+            ps.setString(parameterIndex + 1, codUsuarioEditor);   // Agrega el codUsuario del editor
+            ps.setInt(parameterIndex + 2, usu.getIdUsuario());    // Asigna el valor de "idUsuario" para la condición WHERE
 
             int rowsUpdated = ps.executeUpdate();  // Ejecuta la consulta
 
-            // Si se actualizó al menos una fila, retorna true
-            return rowsUpdated > 0;
+            return rowsUpdated > 0;  // Retorna true si se actualizó al menos una fila
 
         } catch (Exception e) {
             e.printStackTrace();  // Muestra el error si ocurre
