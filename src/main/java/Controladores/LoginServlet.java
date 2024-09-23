@@ -44,6 +44,8 @@ public class LoginServlet extends HttpServlet {
                 request.getSession().setAttribute("email", email);
                 request.getSession().setAttribute("permisos", permisos);
                 request.getSession().setAttribute("nombres", nombres);
+                
+                dao.actualizarEstadoEnLinea(usuario, true);
 
                 // Redirigir dependiendo del tipo de usuario
                 if (permisos.equalsIgnoreCase("Administrador")) {
