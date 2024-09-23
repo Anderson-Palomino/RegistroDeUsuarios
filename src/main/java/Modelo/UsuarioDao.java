@@ -252,6 +252,7 @@ public class UsuarioDao implements IUsuario {
                     // Si el usuario está activo, asignar los datos al objeto UsuarioDto
                     usu.setEmail(rs.getString("Email"));  // Asignar el correo electrónico
                     usu.setNombres(rs.getString("Nombres"));  // Asignar el nombre completo
+                    usu.setPermisos(rs.getString("Permisos"));  // Asignar los permisos del usuario
                     return 1;  // Login exitoso
                 }
             }
