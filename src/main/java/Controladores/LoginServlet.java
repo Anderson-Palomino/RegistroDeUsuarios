@@ -25,6 +25,7 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String accion = request.getParameter("accion");
+
         if (accion.equals("Ingresar")) {
             String usuario = request.getParameter("txtUsuario");
             String password = request.getParameter("txtPassword");
@@ -34,7 +35,7 @@ public class LoginServlet extends HttpServlet {
             if (r == 1) {
                 // Aquí ya deberías tener el email disponible en el objeto 'u'
                 String email = u.getEmail();
-                String nombres= u.getNombres();
+                String nombres = u.getNombres();
 
                 // Almacenar el usuario y el email en la sesión
                 request.getSession().setAttribute("usuario", usuario);
@@ -44,49 +45,29 @@ public class LoginServlet extends HttpServlet {
             } else {
                 request.getRequestDispatcher("/vistas/login.jsp").forward(request, response);
             }
-
+        } else if (accion.equals("Salir")) {
+            // Actualizar EnLinea a 0 cuando el usuario salga
+            String usuario = (String) request.getSession().getAttribute("usuario");
+            if (usuario != null) {
+                dao.actualizarEstadoEnLinea(usuario, false);
+            }
+            // Invalida la sesión y redirige a login
+            request.getSession().invalidate();
+            request.getRequestDispatcher("/vistas/login.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("/vistas/login.jsp").forward(request, response);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

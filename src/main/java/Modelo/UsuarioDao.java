@@ -193,12 +193,12 @@ public class UsuarioDao implements IUsuario {
         return false;
     }
 
-    public List<UsuarioDto> buscarPorNombre(String nombre) {
+    public List<UsuarioDto> buscarPorNombre(String codUsuario) {
         List<UsuarioDto> lista = new ArrayList<>();
         try {
             Connection con = getConexion();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM usuarios WHERE Nombres LIKE ?");
-            ps.setString(1, "%" + nombre + "%");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM usuarios WHERE CodUsuario LIKE ?");
+            ps.setString(1, "%" + codUsuario + "%");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -237,28 +237,53 @@ public class UsuarioDao implements IUsuario {
     @Override
     public int validar(UsuarioDto usu) {
         String sql = "SELECT * FROM usuarios WHERE Usuario = ? AND Password = ?";
-        int resultado = 0;
+        try {
+            con = cn.getConexion();  // Obtener la conexión a la base de datos
+            ps = con.prepareStatement(sql);  // Preparar la consulta
+            ps.setString(1, usu.getUsuario());  // Asignar el valor de "Usuario"
+            ps.setString(2, usu.getPassword());  // Asignar el valor de "Password"
+            rs = ps.executeQuery();  // Ejecutar la consulta
+
+            if (rs.next()) {
+                // Comprobar si el estado es 0 o 2 (usuario inactivo)
+                if (rs.getInt("Estado") == 0 || rs.getInt("Estado") == 2) {
+                    return 0; // Retornar 0 si el usuario está inactivo
+                } else {
+                    // Si el usuario está activo, asignar los datos al objeto UsuarioDto
+                    usu.setEmail(rs.getString("Email"));  // Asignar el correo electrónico
+                    usu.setNombres(rs.getString("Nombres"));  // Asignar el nombre completo
+                    return 1;  // Login exitoso
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  // Manejo de excepciones
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();  // Cerrar el PreparedStatement
+                }
+                if (con != null) {
+                    con.close();  // Cerrar la conexión
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;  // Retorna -1 si el usuario no existe o hubo algún error
+    }
+
+    public void actualizarEstadoEnLinea(String usuario, boolean enLinea) {
+        String sql = "UPDATE usuarios SET EnLinea = ? WHERE Usuario = ?";
         try {
             con = cn.getConexion();
             ps = con.prepareStatement(sql);
-            ps.setString(1, usu.getUsuario());
-            ps.setString(2, usu.getPassword());
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                resultado = 1;
-                usu.setUsuario(rs.getString("Usuario"));
-                usu.setPassword(rs.getString("Password"));
-                usu.setEmail(rs.getString("Email"));
-                usu.setNombres(rs.getString("Nombres"));// Aquí agregas la asignación del email
-            }
+            ps.setBoolean(1, enLinea);
+            ps.setString(2, usuario);
+            ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) {
-                    rs.close();
-                }
                 if (ps != null) {
                     ps.close();
                 }
@@ -269,7 +294,5 @@ public class UsuarioDao implements IUsuario {
                 e.printStackTrace();
             }
         }
-        return resultado;
     }
-
 }

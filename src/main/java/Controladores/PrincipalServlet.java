@@ -59,10 +59,10 @@ public class PrincipalServlet extends HttpServlet {
             acceso = add;
         } else if (action.equalsIgnoreCase("buscar")) {
             // Recoge el parámetro de búsqueda ingresado por el usuario
-            String nombreBuscar = request.getParameter("txtBuscar");
+            String codUsuarioBuscar = request.getParameter("txtBuscar");
 
             // Llama al método del DAO que busca los usuarios por nombre
-            List<UsuarioDto> listaUsuarios = dao.buscarPorNombre(nombreBuscar);
+            List<UsuarioDto> listaUsuarios = dao.buscarPorNombre(codUsuarioBuscar);
 
             // Establece los resultados de la búsqueda como atributo de la petición
             request.setAttribute("usuarios", listaUsuarios);
