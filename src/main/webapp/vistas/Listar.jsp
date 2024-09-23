@@ -19,7 +19,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Home</a>
+                <a class="navbar-brand" href="vistas/home.jsp">Home</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -83,16 +83,23 @@
                     </thead>
                     <tbody>
                         <%
-                            String nombuscar = request.getParameter("txtBuscar");
+                            String codUsuario = request.getParameter("txtBuscar");
                             UsuarioDao dao = new UsuarioDao();
                             List<UsuarioDto> list;
 
-                            if (nombuscar != null && !nombuscar.isEmpty()) {
-                                list = dao.buscarPorNombre(nombuscar);  // Método para buscar por nombre
+                            if (codUsuario != null && !codUsuario.isEmpty()) {
+                                list = dao.buscarPorNombre(codUsuario);  // Método para buscar por nombre
                             } else {
                                 list = dao.listar();  // Si no hay búsqueda, lista todo
                             }
 
+                            if (list == null || list.isEmpty()) {
+                        %>
+                        <tr>
+                            <td colspan="22">No se encontraron resultados.</td>
+                        </tr>
+                        <%
+                        } else {
                             Iterator<UsuarioDto> iter = list.iterator();
                             UsuarioDto usu = null;
                             while (iter.hasNext()) {
@@ -126,13 +133,12 @@
                                 <a href="PrincipalServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-danger btn-sm">Eliminar</a>
                             </td>
                         </tr>
-                        <% }%>
+                        <%  }
+                            }%>
                     </tbody>
                 </table>
             </div>
         </div>
-
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
