@@ -1,13 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:choose>
-    <c:when test="${sessionScope.permisos eq 'Administrador'}">
-        <%@ include file="navbarAdministrador.jsp" %>
-    </c:when>
-    <c:otherwise>
-        <%@ include file="navbarUsuarioNormal.jsp" %>
-    </c:otherwise>
-</c:choose>
+
 <!doctype html>
 <html lang="en">
 
@@ -21,6 +14,14 @@
     </head>
 
     <body>
+        <c:choose>
+            <c:when test="${sessionScope.permisos eq 'Administrador'}">
+                <%@ include file="navbarAdministrador.jsp" %>
+            </c:when>
+            <c:otherwise>
+                <%@ include file="navbarUsuarioNormal.jsp" %>
+            </c:otherwise>
+        </c:choose>
         <div class="container mt-5">
             <div class="row justify-content-center">
                 <div class="col-md-6">
