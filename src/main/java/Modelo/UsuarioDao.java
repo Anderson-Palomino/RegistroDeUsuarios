@@ -17,13 +17,22 @@ public class UsuarioDao implements IUsuario {
     UsuarioDto u = new UsuarioDto();
 
     @Override
-    public List listar() {
+    public List<UsuarioDto> listar(String codUsuario) {
         ArrayList<UsuarioDto> list = new ArrayList<>();
-        String sql = "select * from usuarios";
+        String sql;
+
+        // Consulta según el codUsuario
+        if (codUsuario.equals("ADM1")) {
+            sql = "SELECT * FROM usuarios";
+        } else {
+            sql = "SELECT * FROM usuarios WHERE Permisos = 'UsuarioNormal'";
+        }
+
         try {
             con = cn.getConexion();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
+
             while (rs.next()) {
                 UsuarioDto usu = new UsuarioDto();
                 usu.setItemAi(rs.getInt("ItemAI"));
@@ -51,7 +60,22 @@ public class UsuarioDao implements IUsuario {
                 usu.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso") != null ? rs.getTime("Hora_UltimoAcceso").toLocalTime() : null);
                 list.add(usu);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            e.printStackTrace(); // Considera registrar el error en un log
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return list;
     }
@@ -95,8 +119,8 @@ public class UsuarioDao implements IUsuario {
     }
 
     @Override
-    public boolean add(UsuarioDto usu) {
-        String sql = "INSERT INTO usuarios (Usuario, Password, Nombres, Apellidos, Email, Permisos) VALUES (?, ?, ?, ?, ?, ?)";
+    public boolean add(UsuarioDto usu, String codUsuarioCreador) {
+        String sql = "INSERT INTO usuarios (Usuario, Password, Nombres, Apellidos, Email, Permisos, Creado_Por) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             con = cn.getConexion();
             ps = con.prepareStatement(sql);
@@ -106,6 +130,7 @@ public class UsuarioDao implements IUsuario {
             ps.setString(4, usu.getApellidos());
             ps.setString(5, usu.getEmail());
             ps.setString(6, usu.getPermisos());
+            ps.setString(7, codUsuarioCreador); // Agregar codUsuarioCreador
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0; // Devuelve true si se insertó al menos un registro
@@ -127,8 +152,8 @@ public class UsuarioDao implements IUsuario {
     }
 
     @Override
-    public boolean edit(UsuarioDto usu) {
-        String sql = "UPDATE usuarios SET Usuario = ?, Password = ?, Nombres = ?, Apellidos = ?, Email = ?, Permisos = ? WHERE idUsuario = ?";
+    public boolean edit(UsuarioDto usu, String codUsuarioEditor) {
+        String sql = "UPDATE usuarios SET Usuario = ?, Password = ?, Nombres = ?, Apellidos = ?, Email = ?, Permisos = ?, Modificado_Por = ? WHERE idUsuario = ?";
         try {
             con = cn.getConexion();  // Obteniendo la conexión
             ps = con.prepareStatement(sql);
@@ -140,7 +165,8 @@ public class UsuarioDao implements IUsuario {
             ps.setString(4, usu.getApellidos()); // Asigna el valor de "Apellidos"
             ps.setString(5, usu.getEmail());     // Asigna el valor de "Email"
             ps.setString(6, usu.getPermisos());  // Asigna el valor de "Permisos"
-            ps.setInt(7, usu.getIdUsuario());    // Asigna el valor de "idUsuario" para la condición WHERE
+            ps.setString(7, codUsuarioEditor);   // Agrega el codUsuario del editor
+            ps.setInt(8, usu.getIdUsuario());    // Asigna el valor de "idUsuario" para la condición WHERE
 
             int rowsUpdated = ps.executeUpdate();  // Ejecuta la consulta
 
@@ -165,18 +191,21 @@ public class UsuarioDao implements IUsuario {
         return false;  // Retorna false si la operación falló
     }
 
-    public boolean eliminar(UsuarioDto usu) {
-        String sql = "UPDATE usuarios SET Estado=? WHERE idUsuario = ?";
+    @Override
+    public boolean eliminar(UsuarioDto usu, String codUsuarioEliminador) {
+        String sql = "UPDATE usuarios SET Estado=?, Eliminado_Por=? WHERE idUsuario = ?";
         try {
             con = cn.getConexion();
             ps = con.prepareStatement(sql);
 
             ps.setInt(1, usu.getEstado());
-            ps.setInt(2, usu.getIdUsuario());
+            ps.setString(2, codUsuarioEliminador); // Agrega el codUsuario del eliminador
+            ps.setInt(3, usu.getIdUsuario());
 
             int rowsUpdated = ps.executeUpdate();
             return rowsUpdated > 0;
         } catch (Exception e) {
+            e.printStackTrace(); // Manejo de errores
         } finally {
             try {
                 if (ps != null) {
@@ -193,44 +222,69 @@ public class UsuarioDao implements IUsuario {
         return false;
     }
 
-    public List<UsuarioDto> buscarPorNombre(String codUsuario) {
+    public List<UsuarioDto> buscarPorCodUsuario(String codUsuario, String codUsuarioSession) {
         List<UsuarioDto> lista = new ArrayList<>();
+        String sql;
+
+        // Verifica si el usuario en sesión es ADM1
+        if ("ADM1".equals(codUsuarioSession)) {
+            sql = "SELECT * FROM usuarios WHERE CodUsuario LIKE ?";
+        } else {
+            // Si no es ADM1, solo permite buscar usuarios normales
+            sql = "SELECT * FROM usuarios WHERE CodUsuario LIKE ? AND Permisos != 'Administrador'";
+        }
+
         try {
-            Connection con = getConexion();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM usuarios WHERE CodUsuario LIKE ?");
-            ps.setString(1, "%" + codUsuario + "%");
-            ResultSet rs = ps.executeQuery();
+            con = cn.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + codUsuario + "%"); // Utiliza LIKE para permitir coincidencias parciales
+            rs = ps.executeQuery();
 
             while (rs.next()) {
-                UsuarioDto u = new UsuarioDto();
-                u.setItemAi(rs.getInt("ItemAI"));
-                u.setIdUsuario(rs.getInt("idUsuario"));
-                u.setCodUsuario(rs.getString("CodUsuario"));
-                u.setUsuario(rs.getString("Usuario"));
-                u.setPassword(rs.getString("Password"));
-                u.setNombres(rs.getString("Nombres"));
-                u.setApellidos(rs.getString("Apellidos"));
-                u.setEmail(rs.getString("Email"));
-                u.setPermisos(rs.getString("Permisos"));
-                u.setEstado(rs.getInt("Estado"));
-                u.setEnlinea(rs.getBoolean("EnLinea"));
-                u.setNumIngresos(rs.getObject("Num_Ingresos") != null ? rs.getInt("Num_Ingresos") : 0);
-                u.setFecCreacion(rs.getDate("Fec_Creacion").toLocalDate());
-                u.setFecModificacion(rs.getDate("Fec_Modificacion") != null ? rs.getDate("Fec_Modificacion").toLocalDate() : null);
-                u.setFecEliminacion(rs.getDate("Fec_Eliminacion") != null ? rs.getDate("Fec_Eliminacion").toLocalDate() : null);
-                u.setFecUltimoAcceso(rs.getDate("Fec_UltimoAcceso") != null ? rs.getDate("Fec_UltimoAcceso").toLocalDate() : null);
-                u.setCreadoPor(rs.getString("Creado_Por") != null ? rs.getString("Creado_Por") : "");
-                u.setModificadoPor(rs.getString("Modificado_Por") != null ? rs.getString("Modificado_Por") : "");
-                u.setEliminadaPor(rs.getString("Eliminado_Por") != null ? rs.getString("Eliminado_Por") : "");
-                u.setHoraCreacion(rs.getTime("Hora_Creacion").toLocalTime());
-                u.setHoraModificacion(rs.getTime("Hora_Modificacion") != null ? rs.getTime("Hora_Modificacion").toLocalTime() : null);
-                u.setHoraEliminacion(rs.getTime("Hora_Eliminacion") != null ? rs.getTime("Hora_Eliminacion").toLocalTime() : null);
-                u.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso") != null ? rs.getTime("Hora_UltimoAcceso").toLocalTime() : null);
-                lista.add(u);
+                UsuarioDto usu = new UsuarioDto();
+                usu.setItemAi(rs.getInt("ItemAI"));
+                usu.setIdUsuario(rs.getInt("idUsuario"));
+                usu.setCodUsuario(rs.getString("CodUsuario"));
+                usu.setUsuario(rs.getString("Usuario"));
+                usu.setPassword(rs.getString("Password"));
+                usu.setNombres(rs.getString("Nombres"));
+                usu.setApellidos(rs.getString("Apellidos"));
+                usu.setEmail(rs.getString("Email"));
+                usu.setPermisos(rs.getString("Permisos"));
+                usu.setEstado(rs.getInt("Estado"));
+                usu.setEnlinea(rs.getBoolean("EnLinea"));
+                usu.setNumIngresos(rs.getObject("Num_Ingresos") != null ? rs.getInt("Num_Ingresos") : 0);
+                usu.setFecCreacion(rs.getDate("Fec_Creacion").toLocalDate());
+                usu.setFecModificacion(rs.getDate("Fec_Modificacion") != null ? rs.getDate("Fec_Modificacion").toLocalDate() : null);
+                usu.setFecEliminacion(rs.getDate("Fec_Eliminacion") != null ? rs.getDate("Fec_Eliminacion").toLocalDate() : null);
+                usu.setFecUltimoAcceso(rs.getDate("Fec_UltimoAcceso") != null ? rs.getDate("Fec_UltimoAcceso").toLocalDate() : null);
+                usu.setCreadoPor(rs.getString("Creado_Por") != null ? rs.getString("Creado_Por") : "");
+                usu.setModificadoPor(rs.getString("Modificado_Por") != null ? rs.getString("Modificado_Por") : "");
+                usu.setEliminadaPor(rs.getString("Eliminado_Por") != null ? rs.getString("Eliminado_Por") : "");
+                usu.setHoraCreacion(rs.getTime("Hora_Creacion").toLocalTime());
+                usu.setHoraModificacion(rs.getTime("Hora_Modificacion") != null ? rs.getTime("Hora_Modificacion").toLocalTime() : null);
+                usu.setHoraEliminacion(rs.getTime("Hora_Eliminacion") != null ? rs.getTime("Hora_Eliminacion").toLocalTime() : null);
+                usu.setHoraUltimoAcceso(rs.getTime("Hora_UltimoAcceso") != null ? rs.getTime("Hora_UltimoAcceso").toLocalTime() : null);
+                lista.add(usu);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
         return lista;
     }
 
@@ -250,7 +304,8 @@ public class UsuarioDao implements IUsuario {
                     return 0; // Retornar 0 si el usuario está inactivo
                 } else {
                     // Si el usuario está activo, asignar los datos al objeto UsuarioDto
-                    usu.setEmail(rs.getString("Email"));  // Asignar el correo electrónico
+                    usu.setCodUsuario(rs.getString("CodUsuario"));
+                    usu.setEmail(rs.getString("Email"));  // Asignar el correo eltrónico
                     usu.setNombres(rs.getString("Nombres"));  // Asignar el nombre completo
                     usu.setPermisos(rs.getString("Permisos"));  // Asignar los permisos del usuario
                     return 1;  // Login exitoso

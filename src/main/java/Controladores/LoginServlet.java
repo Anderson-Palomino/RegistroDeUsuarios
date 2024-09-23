@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controladores;
 
 import Modelo.UsuarioDao;
 import Modelo.UsuarioDto;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,19 +26,23 @@ public class LoginServlet extends HttpServlet {
             String password = request.getParameter("txtPassword");
             u.setUsuario(usuario);
             u.setPassword(password);
+
+            // Validamos el usuario y llenamos el objeto UsuarioDto con los datos del usuario
             r = dao.validar(u);
             
             if (r == 1) {
-                // Aquí obtenemos los datos del usuario validado
+                // Obtenemos los datos completos del usuario
                 String email = u.getEmail();
                 String nombres = u.getNombres();
                 String permisos = u.getPermisos();
+                String codUsuario = u.getCodUsuario();
 
-                // Almacenar el usuario, email, nombres y permisos en la sesión
+                // Almacenar el usuario y sus datos en la sesión
                 request.getSession().setAttribute("usuario", usuario);
                 request.getSession().setAttribute("email", email);
                 request.getSession().setAttribute("permisos", permisos);
                 request.getSession().setAttribute("nombres", nombres);
+                request.getSession().setAttribute("codUsuario", codUsuario);
                 
                 dao.actualizarEstadoEnLinea(usuario, true);
 
@@ -85,4 +84,3 @@ public class LoginServlet extends HttpServlet {
         processRequest(request, response);
     }
 }
-
