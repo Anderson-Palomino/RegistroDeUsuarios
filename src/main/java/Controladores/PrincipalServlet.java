@@ -58,14 +58,16 @@ public class PrincipalServlet extends HttpServlet {
         } else if (action.equalsIgnoreCase("add")) {
             acceso = add;
         } else if (action.equalsIgnoreCase("buscar")) {
-            // Recoge el parámetro de búsqueda ingresado por el usuario
             String codUsuarioBuscar = request.getParameter("txtBuscar");
+            String codUsuarioSession = (String) request.getSession().getAttribute("codUsuario");
 
-            // Llama al método del DAO que busca los usuarios por nombre
-            List<UsuarioDto> listaUsuarios = dao.buscarPorNombre(codUsuarioBuscar);
-
-            // Establece los resultados de la búsqueda como atributo de la petición
-            request.setAttribute("usuarios", listaUsuarios);
+            if (codUsuarioBuscar != null && !codUsuarioBuscar.isEmpty()) {
+                // Llama al método del DAO que busca los usuarios por código de usuario
+                List<UsuarioDto> listaUsuarios = dao.buscarPorCodUsuario(codUsuarioBuscar, codUsuarioSession);
+                request.setAttribute("usuarios", listaUsuarios);
+            } else {
+                request.setAttribute("usuarios", dao.listar(codUsuarioSession)); // Lista todos los usuarios si no hay búsqueda
+            }
 
             acceso = listar; // Redirige a la página de listado de usuarios con los resultados
         } else if (action.equalsIgnoreCase("Agregar")) {
@@ -75,13 +77,17 @@ public class PrincipalServlet extends HttpServlet {
             String apellidos = request.getParameter("apellidos");
             String email = request.getParameter("email");
             String permisos = request.getParameter("permisos");
+
             u.setUsuario(usuario);
             u.setPassword(password);
             u.setNombres(nombres);
             u.setApellidos(apellidos);
             u.setEmail(email);
             u.setPermisos(permisos);
-            dao.add(u);
+
+            // Obtener el codUsuario del creador desde la sesión
+            String codUsuarioCreador = (String) request.getSession().getAttribute("codUsuario");
+            dao.add(u, codUsuarioCreador); // Pasar el codUsuarioCreador
             acceso = listar;
         } else if (action.equalsIgnoreCase("editar")) {
             request.setAttribute("idusu", request.getParameter("idUsuario"));
@@ -94,6 +100,7 @@ public class PrincipalServlet extends HttpServlet {
             String apellidos = request.getParameter("apellidos");
             String email = request.getParameter("email");
             String permisos = request.getParameter("permisos");
+
             u.setIdUsuario(idUsuario);
             u.setUsuario(usuario);
             u.setPassword(password);
@@ -101,12 +108,18 @@ public class PrincipalServlet extends HttpServlet {
             u.setApellidos(apellidos);
             u.setEmail(email);
             u.setPermisos(permisos);
-            dao.edit(u);
+
+            // Obtener el codUsuario del editor desde la sesión
+            String codUsuarioEditor = (String) request.getSession().getAttribute("codUsuario");
+            dao.edit(u, codUsuarioEditor); // Pasar el codUsuarioEditor
             acceso = listar;
         } else if (action.equalsIgnoreCase("eliminar")) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
             u.setIdUsuario(idUsuario);
-            dao.eliminar(u);
+
+            // Obtener el codUsuario del eliminador desde la sesión
+            String codUsuarioEliminador = (String) request.getSession().getAttribute("codUsuario");
+            dao.eliminar(u, codUsuarioEliminador); // Pasar el codUsuarioEliminador
             acceso = listar;
         }
 
