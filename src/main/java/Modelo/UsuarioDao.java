@@ -1,6 +1,7 @@
 package Modelo;
 
 import conexion.Conexion;
+
 import static conexion.Conexion.getConexion;
 
 import java.sql.*;
@@ -120,6 +121,23 @@ public class UsuarioDao implements IUsuario {
 
     @Override
     public boolean add(UsuarioDto usu, String codUsuarioCreador) {
+        String permisos = usu.getPermisos();
+
+        // Verificar si el creador es ADM1 y si está asignando un permiso válido
+        if (codUsuarioCreador.equals("ADM1")) {
+            // ADM1 solo puede asignar "Administrador" o "UsuarioNormal"
+            if (!permisos.equals("Administrador") && !permisos.equals("UsuarioNormal")) {
+                System.out.println("ADM1 solo puede asignar los roles 'Administrador' o 'UsuarioNormal'.");
+                return false;
+            }
+        } else {
+            // Otros administradores solo pueden asignar "UsuarioNormal"
+            if (!permisos.equals("UsuarioNormal")) {
+                System.out.println("El usuario " + codUsuarioCreador + " solo puede asignar el rol 'UsuarioNormal'.");
+                return false;
+            }
+        }
+
         String sql = "INSERT INTO usuarios (Usuario, Password, Nombres, Apellidos, Email, Permisos, Creado_Por) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             con = cn.getConexion();
@@ -129,8 +147,8 @@ public class UsuarioDao implements IUsuario {
             ps.setString(3, usu.getNombres());
             ps.setString(4, usu.getApellidos());
             ps.setString(5, usu.getEmail());
-            ps.setString(6, usu.getPermisos());
-            ps.setString(7, codUsuarioCreador); // Agregar codUsuarioCreador
+            ps.setString(6, permisos); // Permiso ya validado previamente
+            ps.setString(7, codUsuarioCreador);
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0; // Devuelve true si se insertó al menos un registro
@@ -151,7 +169,6 @@ public class UsuarioDao implements IUsuario {
         return false; // Si no se insertó nada, devuelve false
     }
 
-    
     @Override
     public boolean edit(UsuarioDto usu, String codUsuarioEditor) {
         String sql = "UPDATE usuarios SET Usuario = ?, Password = ?, Nombres = ?, Apellidos = ?, Email = ?, "
@@ -204,17 +221,19 @@ public class UsuarioDao implements IUsuario {
 
     @Override
     public boolean eliminar(UsuarioDto usu, String codUsuarioEliminador) {
-        String sql = "UPDATE usuarios SET Estado=?, Eliminado_Por=? WHERE idUsuario = ?";
+        String sql = "UPDATE usuarios SET Estado = ?, Eliminado_Por = ?, Fec_Eliminacion = NOW() WHERE idUsuario = ?";
         try {
             con = cn.getConexion();
             ps = con.prepareStatement(sql);
 
-            ps.setInt(1, usu.getEstado());
-            ps.setString(2, codUsuarioEliminador); // Agrega el codUsuario del eliminador
+            // Cambia el estado del usuario a 0 para indicar eliminación lógica
+            ps.setInt(1, 0);  // Estado 0 = Eliminado
+            ps.setString(2, codUsuarioEliminador); // Usuario que realiza la eliminación
             ps.setInt(3, usu.getIdUsuario());
 
             int rowsUpdated = ps.executeUpdate();
-            return rowsUpdated > 0;
+            return rowsUpdated > 0;  // Retorna true si se actualizaron filas
+
         } catch (Exception e) {
             e.printStackTrace(); // Manejo de errores
         } finally {
@@ -229,8 +248,7 @@ public class UsuarioDao implements IUsuario {
                 e.printStackTrace();
             }
         }
-
-        return false;
+        return false;  // Retorna false si algo falla
     }
 
     public List<UsuarioDto> buscarPorCodUsuario(String codUsuario, String codUsuarioSession) {

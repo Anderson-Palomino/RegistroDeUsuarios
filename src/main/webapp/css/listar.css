@@ -22,7 +22,7 @@ body {
 /* Estilo para las celdas */
 .table td, .table th {
     padding: 1rem; /* Aumenta el espacio interno de las celdas */
-    min-width: 160px; /* Asegura que cada celda tenga un ancho mínimo */
+    min-width: 200px; /* Asegura que cada celda tenga un ancho mínimo */
 }
 
 .btn-primary {

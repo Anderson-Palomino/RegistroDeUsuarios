@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
  * @author ander
  */
 @WebServlet(name = "PrincipalServlet", urlPatterns = {"/PrincipalServlet"})
@@ -78,6 +77,7 @@ public class PrincipalServlet extends HttpServlet {
             String email = request.getParameter("email");
             String permisos = request.getParameter("permisos");
 
+            // Setear los datos del usuario
             u.setUsuario(usuario);
             u.setPassword(password);
             u.setNombres(nombres);
@@ -87,8 +87,20 @@ public class PrincipalServlet extends HttpServlet {
 
             // Obtener el codUsuario del creador desde la sesión
             String codUsuarioCreador = (String) request.getSession().getAttribute("codUsuario");
-            dao.add(u, codUsuarioCreador); // Pasar el codUsuarioCreador
-            acceso = listar;
+
+            // Intentar agregar el usuario
+            boolean resultado = dao.add(u, codUsuarioCreador); // Pasar el codUsuarioCreador
+
+            if (resultado) {
+                // Redireccionar o mostrar un mensaje de éxito
+                request.setAttribute("mensaje", "Usuario agregado correctamente.");
+            } else {
+                // Redireccionar o mostrar un mensaje de error
+                request.setAttribute("mensaje", "Error al agregar el usuario. Verifica los permisos.");
+            }
+
+            // Después de intentar agregar, redirigir a la lista de usuarios o a otra vista
+            acceso = listar;  // Por ejemplo, redirigir a la vista de listado de usuarios
         } else if (action.equalsIgnoreCase("editar")) {
             request.setAttribute("idusu", request.getParameter("idUsuario"));
             acceso = edit;
