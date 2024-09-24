@@ -17,8 +17,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tabla de Usuarios</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <link href="${pageContext.request.contextPath}/css/listar.css" rel="stylesheet" type="text/css"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/css/ionicons.min.css">
     </head>
     <body>
         <c:choose>
@@ -32,12 +32,16 @@
         <div class="container my-4">
             <h2 class="mb-4 text-center">Usuarios</h2>
             <div class="mb-3 text-end">
-                <a href="PrincipalServlet?accion=add" class="btn btn-primary mb-2">Agregar nuevo usuario</a>
+                <a href="PrincipalServlet?accion=add" class="btn btn-primary mb-2">
+                    <i class="fa-solid fa-user-plus"></i> Agregar nuevo usuario
+                </a>
                 <form action="PrincipalServlet" method="get" class="d-inline-block ms-3">
                     <div class="input-group">
                         <input type="hidden" name="accion" value="listar">
                         <input type="text" class="form-control" name="txtBuscar" placeholder="Buscar usuario">
-                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-search"></i> Buscar
+                        </button>
                     </div>
                 </form>
             </div>
@@ -112,25 +116,43 @@
                             <td><%= usu.getApellidos()%></td>
                             <td><%= usu.getEmail()%></td>
                             <td><%= usu.getPermisos()%></td>
-                            <td><%= usu.getEstado()%></td>
-                            <td><%= usu.isEnlinea()%></td>
+                            <td><%= usu.getEstadoTexto()%></td>
+                            <td>
+                                <%
+                                    if ("Online".equals(usu.getEnLineaTexto())) {
+                                %>
+                                <i class="fa-solid fa-circle" style="color: green;"></i> <%= usu.getEnLineaTexto()%>
+                                <%
+                                } else {
+                                %>
+                                <i class="fa-solid fa-circle" style="color: red;"></i> <%= usu.getEnLineaTexto()%>
+                                <%
+                                    }
+                                %>
+                            </td>
+
                             <td><%= usu.getNumIngresos()%></td>
                             <td><%= usu.getFecCreacion()%></td>
-                            <td><%= usu.getFecModificacion()%></td>
-                            <td><%= usu.getFecEliminacion()%></td>
-                            <td><%= usu.getFecUltimoAcceso()%></td>
+                            <td><%= usu.getFecModificacionTexto()%></td>
+                            <td><%= usu.getFecEliminacionTexto()%></td>
+                            <td><%= usu.getFecUltimoAccesoTexto()%></td>
                             <td><%= usu.getCreadoPor()%></td>
-                            <td><%= usu.getModificadoPor()%></td>
-                            <td><%= usu.getEliminadaPor()%></td>
+                            <td><%= usu.getModificadoPorTexto()%></td>
+                            <td><%= usu.getEliminadaPorTexto()%></td>
                             <td><%= usu.getHoraCreacion()%></td>
-                            <td><%= usu.getHoraModificacion()%></td>
-                            <td><%= usu.getHoraEliminacion()%></td>
-                            <td><%= usu.getHoraUltimoAcceso()%></td>
+                            <td><%= usu.getHoraModificacionTexto()%></td>
+                            <td><%= usu.getHoraEliminacionTexto()%></td>
+                            <td><%= usu.getHoraUltimoAccesoTexto()%></td>
                             <td>
-                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-warning btn-sm">Editar</a>
-                                <a href="PrincipalServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-danger btn-sm">Eliminar</a>
+                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-warning btn-sm">
+                                    <i class="fa-solid fa-pen"></i> Editar
+                                </a>
+                                <a href="PrincipalServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-trash"></i> Eliminar
+                                </a>
                             </td>
                         </tr>
+
                         <%
                                 }
                             }

@@ -11,7 +11,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/vistas/Listar.jsp">Dashboard</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/PrincipalServlet?accion=listar">Dashboard</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

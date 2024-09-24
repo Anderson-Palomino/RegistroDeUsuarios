@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class UsuarioDto {
-    
+
     private int itemAi; // Correlativo único
     private int idUsuario; // Correlativo desde 10000000x
     private String codUsuario;
@@ -30,9 +30,9 @@ public class UsuarioDto {
     private LocalTime horaUltimoAcceso;
 
     // Constructores
-    public UsuarioDto(){
+    public UsuarioDto() {
     }
-    
+
     //Pensando en poder listar todo el contenido de la tabla
     public UsuarioDto(int idUsuario, String codUsuario, String usuario, String password, String nombres, String apellidos, String email, String permisos, int estado, boolean enlinea, int numIngresos, LocalDate fecCreacion, LocalDate fecModificacion, LocalDate fecEliminacion, LocalDate fecUltimoAcceso, String creadoPor, String modificadoPor, String eliminadaPor, LocalTime horaCreacion, LocalTime horaModificacion, LocalTime horaEliminacion, LocalTime horaUltimoAcceso) {
         this.idUsuario = idUsuario;
@@ -57,6 +57,55 @@ public class UsuarioDto {
         this.horaModificacion = horaModificacion;
         this.horaEliminacion = horaEliminacion;
         this.horaUltimoAcceso = horaUltimoAcceso;
+    }
+
+    public String getEstadoTexto() {
+        switch (this.estado) {
+            case 0:
+                return "Eliminado";
+            case 1:
+                return "Activo";
+            case 2:
+                return "Suspendido";
+            default:
+                return "Desconocido";
+        }
+    }
+
+    public String getEnLineaTexto() {
+        return this.enlinea ? "Online" : "Offline";
+    }
+
+    public String getFecModificacionTexto() {
+        return (this.fecModificacion != null) ? this.fecModificacion.toString() : "No hay registros";
+    }
+
+    public String getFecEliminacionTexto() {
+        return (this.fecEliminacion != null) ? this.fecEliminacion.toString() : "No hay registros";
+    }
+
+    public String getFecUltimoAccesoTexto() {
+        return (this.fecUltimoAcceso != null) ? this.fecUltimoAcceso.toString() : "No hay registros";
+    }
+
+    public String getHoraModificacionTexto() {
+        return (this.horaModificacion != null) ? this.horaModificacion.toString() : "No hay registros";
+    }
+
+    public String getHoraEliminacionTexto() {
+        return (this.horaEliminacion != null) ? this.horaEliminacion.toString() : "No hay registros";
+    }
+
+    public String getHoraUltimoAccesoTexto() {
+        return (this.horaUltimoAcceso != null) ? this.horaUltimoAcceso.toString() : "No hay registros";
+    }
+
+    public String getModificadoPorTexto() {
+        return (this.modificadoPor != null && !this.modificadoPor.isEmpty()) ? this.modificadoPor : "No hay registros";
+    }
+
+    public String getEliminadaPorTexto() {
+        return (this.eliminadaPor != null && !this.eliminadaPor.isEmpty()) ? this.eliminadaPor : "No hay registros";
     }
 
     public int getItemAi() {
@@ -242,6 +291,5 @@ public class UsuarioDto {
     public void setHoraUltimoAcceso(LocalTime horaUltimoAcceso) {
         this.horaUltimoAcceso = horaUltimoAcceso;
     }
-    
-    
+
 }
