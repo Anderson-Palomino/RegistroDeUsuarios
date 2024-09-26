@@ -319,32 +319,26 @@ public class UsuarioDao implements IUsuario {
 
     @Override
     public int validar(UsuarioDto usu) {
-        String sql = "SELECT * FROM usuarios WHERE Usuario = ?";
+        String sql = "SELECT * FROM usuarios WHERE Usuario = ? AND Password = ?";
         try {
             con = cn.getConexion();  // Obtener la conexión a la base de datos
             ps = con.prepareStatement(sql);  // Preparar la consulta
             ps.setString(1, usu.getUsuario());  // Asignar el valor de "Usuario"
+            ps.setString(2, usu.getPassword());  // Asignar el valor de "Password"
             rs = ps.executeQuery();  // Ejecutar la consulta
 
             if (rs.next()) {
-                // Verificar si la contraseña es correcta
-                if (rs.getString("Password").equals(usu.getPassword())) {
-                    // Verificar si el estado del usuario está inactivo
-                    if (rs.getInt("Estado") == 0 || rs.getInt("Estado") == 2) {
-                        return 0; // Usuario inactivo
-                    } else {
-                        // Usuario activo y contraseña correcta
-                        usu.setCodUsuario(rs.getString("CodUsuario"));
-                        usu.setEmail(rs.getString("Email"));
-                        usu.setNombres(rs.getString("Nombres"));
-                        usu.setPermisos(rs.getString("Permisos"));
-                        return 1;  // Login exitoso
-                    }
+                // Comprobar si el estado es 0 o 2 (usuario inactivo)
+                if (rs.getInt("Estado") == 0 || rs.getInt("Estado") == 2) {
+                    return 0; // Retornar 0 si el usuario está inactivo
                 } else {
-                    return 2; // Contraseña incorrecta
+                    // Si el usuario está activo, asignar los datos al objeto UsuarioDto
+                    usu.setCodUsuario(rs.getString("CodUsuario"));
+                    usu.setEmail(rs.getString("Email"));  // Asignar el correo eltrónico
+                    usu.setNombres(rs.getString("Nombres"));  // Asignar el nombre completo
+                    usu.setPermisos(rs.getString("Permisos"));  // Asignar los permisos del usuario
+                    return 1;  // Login exitoso
                 }
-            } else {
-                return 3; // Usuario no existe
             }
         } catch (Exception e) {
             e.printStackTrace();  // Manejo de excepciones
@@ -360,7 +354,7 @@ public class UsuarioDao implements IUsuario {
                 e.printStackTrace();
             }
         }
-        return -1;  // Error en la operación
+        return -1;  // Retorna -1 si el usuario no existe o hubo algún error
     }
 
     public void actualizarEstadoEnLinea(String usuario, boolean enLinea) {

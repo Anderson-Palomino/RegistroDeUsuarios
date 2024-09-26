@@ -7,7 +7,7 @@ public class Conexion {
 
     public static Connection getConexion() {
         Connection conexion = null;
-        String baseDatos = "prueba2";
+        String baseDatos = "bd_proyecto_sistemas_distribuidos";
         String url = "jdbc:mysql://localhost:3306/" + baseDatos;
         String usuario = "root";
         String password = "root";
