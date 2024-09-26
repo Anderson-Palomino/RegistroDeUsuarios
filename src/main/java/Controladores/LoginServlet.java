@@ -27,34 +27,45 @@ public class LoginServlet extends HttpServlet {
             u.setUsuario(usuario);
             u.setPassword(password);
 
-            // Validamos el usuario y llenamos el objeto UsuarioDto con los datos del usuario
+            // Validamos el usuario y obtenemos el resultado
             r = dao.validar(u);
-            
+
             if (r == 1) {
-                // Obtenemos los datos completos del usuario
+                // Si el usuario es válido y la contraseña es correcta
                 String email = u.getEmail();
                 String nombres = u.getNombres();
                 String permisos = u.getPermisos();
                 String codUsuario = u.getCodUsuario();
 
-                // Almacenar el usuario y sus datos en la sesión
+                // Almacenar datos del usuario en la sesión
                 request.getSession().setAttribute("usuario", usuario);
                 request.getSession().setAttribute("email", email);
                 request.getSession().setAttribute("permisos", permisos);
                 request.getSession().setAttribute("nombres", nombres);
                 request.getSession().setAttribute("codUsuario", codUsuario);
-                
+
                 dao.actualizarEstadoEnLinea(usuario, true);
 
-                // Redirigir dependiendo del tipo de usuario
+                // Redirigir dependiendo de los permisos del usuario
                 if (permisos.equalsIgnoreCase("Administrador")) {
-                    request.getRequestDispatcher("/vistas/Listar.jsp").forward(request, response); // Admin Dashboard
+                    request.getRequestDispatcher("/vistas/Listar.jsp").forward(request, response);
                 } else if (permisos.equalsIgnoreCase("UsuarioNormal")) {
-                    request.getRequestDispatcher("/vistas/home.jsp").forward(request, response); // Página de inicio para usuarios normales
+                    request.getRequestDispatcher("/vistas/home.jsp").forward(request, response);
                 }
+
+            } else if (r == 2) {
+                // Contraseña incorrecta
+                request.setAttribute("mensajeError", "La contraseña es incorrecta");
+                request.getRequestDispatcher("/vistas/login.jsp").forward(request, response);
+
+            } else if (r == 3) {
+                // Usuario no existe
+                request.setAttribute("mensajeError", "El usuario y la contraseña son incorrectos");
+                request.getRequestDispatcher("/vistas/login.jsp").forward(request, response);
+
             } else {
-                // Si no es válido, redirigir al login nuevamente
-                request.setAttribute("error", "Usuario o contraseña incorrecta");
+                // Otro tipo de error o usuario inactivo
+                request.setAttribute("mensajeError", "Error en la autenticación o el usuario está inactivo");
                 request.getRequestDispatcher("/vistas/login.jsp").forward(request, response);
             }
         } else if (accion.equals("Salir")) {
