@@ -317,67 +317,96 @@ public class UsuarioDao implements IUsuario {
         return lista;
     }
 
-    @Override
-    public int validar(UsuarioDto usu) {
-        String sql = "SELECT * FROM usuarios WHERE Usuario = ? AND Password = ?";
-        try {
-            con = cn.getConexion();  // Obtener la conexión a la base de datos
-            ps = con.prepareStatement(sql);  // Preparar la consulta
-            ps.setString(1, usu.getUsuario());  // Asignar el valor de "Usuario"
-            ps.setString(2, usu.getPassword());  // Asignar el valor de "Password"
-            rs = ps.executeQuery();  // Ejecutar la consulta
-
-            if (rs.next()) {
-                // Comprobar si el estado es 0 o 2 (usuario inactivo)
-                if (rs.getInt("Estado") == 0 || rs.getInt("Estado") == 2) {
-                    return 0; // Retornar 0 si el usuario está inactivo
-                } else {
-                    // Si el usuario está activo, asignar los datos al objeto UsuarioDto
-                    usu.setCodUsuario(rs.getString("CodUsuario"));
-                    usu.setEmail(rs.getString("Email"));  // Asignar el correo eltrónico
-                    usu.setNombres(rs.getString("Nombres"));  // Asignar el nombre completo
-                    usu.setPermisos(rs.getString("Permisos"));  // Asignar los permisos del usuario
-                    return 1;  // Login exitoso
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();  // Manejo de excepciones
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();  // Cerrar el PreparedStatement
-                }
-                if (con != null) {
-                    con.close();  // Cerrar la conexión
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return -1;  // Retorna -1 si el usuario no existe o hubo algún error
-    }
-
-    public void actualizarEstadoEnLinea(String usuario, boolean enLinea) {
-        String sql = "UPDATE usuarios SET EnLinea = ? WHERE Usuario = ?";
+    public int validar(UsuarioDto usuario) {
+        String sql = "SELECT * FROM usuarios WHERE Usuario=? AND Password=?";
         try {
             con = cn.getConexion();
             ps = con.prepareStatement(sql);
-            ps.setBoolean(1, enLinea);
-            ps.setString(2, usuario);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+            ps.setString(1, usuario.getUsuario());
+            ps.setString(2, usuario.getPassword());
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                // Verificar el estado del usuario
+                int estado = rs.getInt("Estado"); // Asegúrate que este campo exista en la tabla
+
+                if (estado == 0) {
+                    return 4; // Usuario eliminado
+                } else if (estado == 2) {
+                    return 5; // Usuario suspendido
+                }
+
+                // Asignar valores a usuario DTO
+                usuario.setEmail(rs.getString("Email")); // Asegúrate que este campo exista en la tabla
+                usuario.setNombres(rs.getString("Nombres")); // Asegúrate que este campo exista en la tabla
+                usuario.setPermisos(rs.getString("Permisos")); // Asegúrate que este campo exista en la tabla
+                usuario.setCodUsuario(rs.getString("CodUsuario")); // Asegúrate que este campo exista en la tabla
+
+                return 1; // Usuario y contraseña correctos
+            } else {
+                return 2; // Contraseña incorrecta
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Para depuración
+            return 3; // Error o usuario no existe
         } finally {
+            // Cierra los recursos
             try {
+                if (rs != null) {
+                    rs.close();
+                }
                 if (ps != null) {
                     ps.close();
                 }
                 if (con != null) {
                     con.close();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace(); // Para depuración
             }
         }
+    }
+
+    // Método para actualizar estado de "En línea" del usuario
+    public void actualizarEstadoEnLinea(String usuario, boolean enLinea) {
+        String sql = "UPDATE usuarios SET EnLinea=? WHERE Usuario=?";
+        try {
+            con = cn.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setBoolean(1, enLinea);
+            ps.setString(2, usuario);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void suspenderUsuario(String usuario) {
+        String sql = "UPDATE usuarios SET Estado=2 WHERE Usuario=?";
+        try {
+            con = cn.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, usuario);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Método para verificar el estado de un usuario
+    public int obtenerEstado(String usuario) {
+        String sql = "SELECT Estado FROM usuarios WHERE Usuario=?";
+        try {
+            con = cn.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, usuario);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Estado"); // Retorna el estado (0, 1, o 2)
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Error al obtener el estado
     }
 }
