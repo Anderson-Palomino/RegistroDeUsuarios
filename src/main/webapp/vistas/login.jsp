@@ -42,7 +42,6 @@
                                 <i class="fas fa-exclamation-triangle"></i> 
                                 Espere <span id="contador">30</span> segundos antes de volver a intentarlo.
                             </div>
-                            <!-- Agregar id="botonIngresar" para referenciarlo desde el script -->
                             <input type="submit" id="botonIngresar" name="accion" class="btn btn-primary w-100" value="Ingresar" disabled>
                         </c:if>
 
@@ -63,23 +62,15 @@
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        
+        <!-- Incluir el archivo de JavaScript externo -->
+        <script src="${pageContext.request.contextPath}/js/tiempobloqueo.js"></script>
 
         <script>
             // Si hay un tiempo de bloqueo, activar el contador
             <c:if test="${not empty tiempoBloqueo}">
                 let tiempoRestante = 30;  // Asumiendo que 30 segundos es el tiempo de bloqueo
-                const countdown = setInterval(function () {
-                    document.getElementById("contador").textContent = tiempoRestante;
-                    tiempoRestante--;
-                    if (tiempoRestante < 0) {
-                        clearInterval(countdown);
-                        // Habilitar el botón de ingreso nuevamente
-                        document.getElementById("contador").textContent = "";
-                        document.getElementById("botonIngresar").disabled = false;
-                    }
-                }, 1000);
-                // Desactivar el botón de ingreso mientras el temporizador esté activo
-                document.getElementById("botonIngresar").disabled = true;
+                iniciarContador(tiempoRestante);
             </c:if>
         </script>
 
