@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/styles.css">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/login.css">
         <title>Login de usuarios</title>
     </head>
     <body>
@@ -39,7 +39,7 @@
                         <!-- Si el usuario está bloqueado por haber fallado 3 veces, mostrar contador -->
                         <c:if test="${not empty tiempoBloqueo}">
                             <div class="alert alert-warning mt-3 text-center" role="alert">
-                                <i class="fas fa-exclamation-triangle"></i> 
+                                <i class="fas fa-exclamation-triangle"></i>
                                 Espere <span id="contador">30</span> segundos antes de volver a intentarlo.
                             </div>
                             <input type="submit" id="botonIngresar" name="accion" class="btn btn-primary w-100" value="Ingresar" disabled>
@@ -61,18 +61,10 @@
             </div>
         </div>
 
+        <!-- Referencias a Bootstrap y JS externo -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         
         <!-- Incluir el archivo de JavaScript externo -->
-        <script src="${pageContext.request.contextPath}/js/tiempobloqueo.js"></script>
-
-        <script>
-            // Si hay un tiempo de bloqueo, activar el contador
-            <c:if test="${not empty tiempoBloqueo}">
-                let tiempoRestante = 30;  // Asumiendo que 30 segundos es el tiempo de bloqueo
-                iniciarContador(tiempoRestante);
-            </c:if>
-        </script>
-
+        <script src="${pageContext.request.contextPath}/js/loginEffects.js"></script>
     </body>
 </html>
