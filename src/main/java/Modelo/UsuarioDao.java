@@ -316,7 +316,8 @@ public class UsuarioDao implements IUsuario {
 
         return lista;
     }
-
+    
+    @Override
     public int validar(UsuarioDto usuario) {
         String sql = "SELECT * FROM usuarios WHERE Usuario=? AND Password=?";
         try {
@@ -368,6 +369,7 @@ public class UsuarioDao implements IUsuario {
     }
 
     // Método para actualizar estado de "En línea" del usuario
+    @Override
     public void actualizarEstadoEnLinea(String usuario, boolean enLinea) {
         String sql = "UPDATE usuarios SET EnLinea=? WHERE Usuario=?";
         try {
@@ -381,6 +383,7 @@ public class UsuarioDao implements IUsuario {
         }
     }
 
+    @Override
     public void suspenderUsuario(String usuario) {
         String sql = "UPDATE usuarios SET Estado=2 WHERE Usuario=?";
         try {
@@ -393,6 +396,7 @@ public class UsuarioDao implements IUsuario {
         }
     }
 
+    @Override
     // Método para verificar el estado de un usuario
     public int obtenerEstado(String usuario) {
         String sql = "SELECT Estado FROM usuarios WHERE Usuario=?";

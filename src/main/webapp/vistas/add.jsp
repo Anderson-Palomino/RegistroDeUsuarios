@@ -29,7 +29,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <h2 class="text-center mb-4"><i class="fas fa-user-plus"></i> Agregar usuarios</h2>
-                    <form action="PrincipalServlet">
+                    <form action="GestionUsuarioServlet">
                         <div class="mb-3">
                             <label for="usuario" class="form-label"><i class="fas fa-user"></i> Usuario</label>
                             <input type="text" class="form-control" id="usuario" name="usuario" required>

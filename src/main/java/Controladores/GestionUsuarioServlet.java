@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author ander
  */
-@WebServlet(name = "PrincipalServlet", urlPatterns = {"/PrincipalServlet"})
-public class PrincipalServlet extends HttpServlet {
+@WebServlet(name = "GestionUsuarioServlet", urlPatterns = {"/GestionUsuarioServlet"})
+public class GestionUsuarioServlet extends HttpServlet {
 
     String listar = "vistas/Listar.jsp";
     String add = "vistas/add.jsp";

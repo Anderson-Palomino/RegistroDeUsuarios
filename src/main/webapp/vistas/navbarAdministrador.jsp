@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/PrincipalServlet?accion=listar">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/GestionUsuarioServlet?accion=listar">
                         <i class="fas fa-chart-line"></i> Dashboard <!-- Ícono de "dashboard" -->
                     </a>
                 </li>
