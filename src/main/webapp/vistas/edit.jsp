@@ -36,7 +36,7 @@
         %>
         <div class="col-md-6">
             <h2 class="text-center mb-4"><i class="fas fa-user-edit"></i> Modificar usuario</h2>
-            <form action="PrincipalServlet">
+            <form action="GestionUsuarioServlet">
                 <div class="mb-3">
                     <label for="usuario" class="form-label"><i class="fas fa-user"></i> Usuario</label>
                     <input type="text" class="form-control" id="usuario" name="usuario" value="<%= u.getUsuario()%>"
@@ -93,7 +93,7 @@
                 <input type="hidden" name="idUsuario" value="<%= u.getIdUsuario()%>">
                 <div class="d-grid gap-2">
                     <input type="submit" class="btn btn-primary" name="accion" value="Actualizar">
-                    <a href="PrincipalServlet?accion=listar" class="btn btn-secondary"><i class="fas fa-arrow-left"></i>
+                    <a href="GestionUsuarioServlet?accion=listar" class="btn btn-secondary"><i class="fas fa-arrow-left"></i>
                         Regresar</a>
                 </div>
             </form>

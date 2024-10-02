@@ -32,10 +32,10 @@
         <div class="container my-4">
             <h2 class="mb-4 text-center">Usuarios</h2>
             <div class="mb-3 text-end">
-                <a href="PrincipalServlet?accion=add" class="btn btn-primary mb-2">
+                <a href="GestionUsuarioServlet?accion=add" class="btn btn-primary mb-2">
                     <i class="fa-solid fa-user-plus"></i> Agregar nuevo usuario
                 </a>
-                <form action="PrincipalServlet" method="get" class="d-inline-block ms-3">
+                <form action="GestionUsuarioServlet" method="get" class="d-inline-block ms-3">
                     <div class="input-group">
                         <input type="hidden" name="accion" value="listar">
                         <input type="text" class="form-control" name="txtBuscar" placeholder="Buscar usuario">
@@ -144,10 +144,10 @@
                             <td><%= usu.getHoraEliminacionTexto()%></td>
                             <td><%= usu.getHoraUltimoAccesoTexto()%></td>
                             <td>
-                                <a href="PrincipalServlet?accion=editar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-warning btn-sm">
+                                <a href="GestionUsuarioServlet?accion=editar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-warning btn-sm">
                                     <i class="fa-solid fa-pen"></i> Editar
                                 </a>
-                                <a href="PrincipalServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-danger btn-sm">
+                                <a href="GestionUsuarioServlet?accion=eliminar&idUsuario=<%= usu.getIdUsuario()%>" class="btn btn-danger btn-sm">
                                     <i class="fa-solid fa-trash"></i> Eliminar
                                 </a>
                             </td>
